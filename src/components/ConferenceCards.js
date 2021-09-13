@@ -21,7 +21,7 @@ export const ConferenceCards = () => {
             {
                 students.map(
                     (studentObject) => {
-                        return <h4>{studentObject.name}</h4>
+                        return <h4 key={studentObject.id}>{studentObject.name}</h4>
                     }
                 )
             }
