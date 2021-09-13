@@ -1,30 +1,13 @@
-import React, { useEffect, useState } from "react"
+import React from "react"
+import { StudentList } from "../students/StudentList"
 
 export const ConferenceCards = () => {
-    
-    const [students, setStudents] = useState([])
-
-    useEffect(
-        () => {
-            fetch("http://localhost:8088/students")
-            .then(response => response.json())
-            .then((studentAPIArray) => {
-                setStudents(studentAPIArray)
-            })
-        },
-        []
-    )
 
     return (
         <>
             <h1>Conference Cards</h1>
-            {
-                students.map(
-                    (studentObject) => {
-                        return <h4 key={studentObject.id}>{studentObject.name}</h4>
-                    }
-                )
-            }
+            <StudentList />
+           
         </>
     )
 }
