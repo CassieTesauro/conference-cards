@@ -22,10 +22,15 @@ export const StudentList = () => {
             {
                 students.map(
                     (studentObject) => {
-                        return <h4 key={`student--${studentObject.id}`}>{studentObject.name}</h4>
+                       if (studentObject.teacherId === parseInt(localStorage.getItem("cc_teacher"))) {
+                            return <h4 key={`student--${studentObject.id}`}>{studentObject.name}</h4> 
+                        } 
+                        else {
+                            <h4> Go to New Student to start building your roster</h4>
+                        }
                     }
                 )
-            }
+            } 
         </>
     )
 }
