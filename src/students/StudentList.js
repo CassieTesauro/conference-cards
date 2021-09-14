@@ -17,6 +17,8 @@ export const StudentList = () => {
 
     return (
         <>
+            <h1>Roster</h1>
+            <h3>Click on a student to view or edit their data.</h3>
             {
                 students.map(
                     (studentObject) => {

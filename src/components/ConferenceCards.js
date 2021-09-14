@@ -1,12 +1,13 @@
 import React from "react"
-import { StudentList } from "../students/StudentList"
+import { ApplicationViews } from "./ApplicationViews"
+import { NavBar } from "./nav/NavBar"
 
 export const ConferenceCards = () => {
 
     return (
         <>
-            <h1>Conference Cards</h1>
-            <StudentList />
+            <NavBar />
+            <ApplicationViews />
            
         </>
     )
