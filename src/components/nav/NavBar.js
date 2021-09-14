@@ -12,6 +12,9 @@ export const NavBar = () => {
                 <Link className="navbar__link" to="/students">Roster</Link>
             </li>
             <li className="navbar__item active">
+                <Link className="navbar__link" to="/students/create">New Student</Link>
+            </li>
+            <li className="navbar__item active">
                 <Link className="navbar__link" to="#"
                     onClick={
                         () => {
