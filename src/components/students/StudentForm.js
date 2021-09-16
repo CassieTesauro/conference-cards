@@ -1,13 +1,7 @@
-////NEW SHORTCUT TO TEST////////////////
+///NEW SHORTCUT TO TEST//
+    //  onChange={(evt) => {modifyParentOne(name, evt.target.value)}}
 
-    //             onChange={
-    //                 (evt) => {
-    //                     modifyParentOne(name, evt.target.value)
-    //                 }
-    //             }
-
-//////////old way in each onchange in the form:
-
+//OLD WAY IN EACH FORM INPUT ONCHANGE//
 // (evt) => {
 //     const copy = {...studentCard} //copy state of blank student object above
 //     copy.name = evt.target.value //put user name input into copy
@@ -15,16 +9,12 @@
 // }
             
 
-///////////////////////////////////////////////////////////////////////
-
 import React, { useState } from "react"
 import { useHistory } from "react-router-dom"
 
 
 export const StudentForm = () => {
-
-    
-/*~~~~~~~ USESTATE HOOKS  ~~~~~~~~~~*/
+  
     const [studentCard, updateStudentCard] = useState({
         name: "",
         mapMath: "",
@@ -49,96 +39,100 @@ export const StudentForm = () => {
 
     const history = useHistory()
 
+    
+    /*~~~~~~~INVOKED IN FORM.  USER INPUT COPY GETS STORED ABOVE WITH USESTATE HOOKS ~~~~~~~~~~*/  //If these 3 don't work, old version @line 1 //     
+    const modifyStudentCard = (propertyToModify, newValue) => {
+        const studentCardCopy = {...studentCard} 
+        studentCardCopy[propertyToModify] = newValue 
+        updateStudentCard(studentCardCopy)
+    }
+    const modifyParentOne = (propertyToModify, newValue) => {
+        const parentOneCopy = {...parentOne} 
+        parentOneCopy[propertyToModify] = newValue 
+        updateParentOne(parentOneCopy)
+    }
+
+    const modifyParentTwo = (propertyToModify, newValue) => {
+        const parentTwoCopy = {...parentTwo} 
+        parentTwoCopy[propertyToModify] = newValue 
+        updateParentTwo(parentTwoCopy)
+    }
 
 
-/*~~~~~~~ INVOKED AT SAVE BUTTON ~~~~~~~~~~*/
-    const saveConferenceCard = () => {
+//     /*~~~~~~~ INVOKED AT SAVE BUTTON ~~~~~~~~~~*/
+//     const saveConferenceCard = () => {
 
+//         /*~~~~~~~CREATE NEW STUDENT, PARENT ONE, PARENT TWO OBJECTS TO SEND TO API ~~~~~~~~~~*/
+//         const newStudentCardData = {
+//             name: studentCard.name,
+//             teacherId: parseInt(localStorage.getItem("cc_teacher")),
+//             mapMath: studentCard.mapMath,
+//             mapReading: studentCard.mapReading,
+//             tla: studentCard.tla,
+//             rocketmath: studentCard.rocketmath,
+//             writing: studentCard.writing,
+//             socialEmotional: studentCard.socialEmotional
+//         }
 
-////////If these 3 modify functions don't work, old version is at the top of module.///////
- 
-/*~~~~~~~ STORE USER FORM INPUT AS TRANSIENT STATE (INVOKED IN FORM INPUTS) ~~~~~~~~~~*/       
-        const modifyStudentCard = (propertyToModify, newValue) => {
-                const studentCardCopy = {...studentCard} 
-                studentCardCopy[propertyToModify] = newValue 
-                updateStudentCard(studentCardCopy)
-        }
-        const modifyParentOne = (propertyToModify, newValue) => {
-                const parentOneCopy = {...parentOne} 
-                parentOneCopy[propertyToModify] = newValue 
-                updateParentOne(parentOneCopy)
-        }
+//         const fetchOptionStudentCardData = {
+//             method: "POST",
+//             headers: {
+//                 "Content-Type": "application/json"
+//             },
+//             body: JSON.stringify(newStudentCardData)
+//         }
 
-        const modifyParentTwo = (propertyToModify, newValue) => {
-                const parentTwoCopy = {...parentTwo} 
-                parentTwoCopy[propertyToModify] = newValue 
-                updateParentTwo(parentTwoCopy)
-        }
+//         //invoked after the student object is posted
+//         const getStudentIdForParentObjects = (studentArray) => {
+//             const newStudentId = studentArray.length - 1
+//             return newStudentId
+//         }
 
+//         const newParentOneCardData = {
+//             //studentId: newStudentId,//<----------------needs value of newStudentId
+//             parentName: parentOne.parentName,
+//             primaryContact: parentOne.primaryContact,  
+//             parentPhone: parentOne.parentPhone
+//         }
 
-/*~~~~~~~CREATE NEW STUDENT, PARENT ONE, PARENT TWO OBJECTS TO SEND TO API ~~~~~~~~~~*/
-        const newStudentCardData = {
-            name: studentCard.name,
-            teacherId: parseInt(localStorage.getItem("cc_teacher")),
-            mapMath: studentCard.mapMath,
-            mapReading: studentCard.mapReading,
-            tla: studentCard.tla,
-            rocketmath: studentCard.rocketmath,
-            writing: studentCard.writing,
-            socialEmotional: studentCard.socialEmotional
-        }
+//         const fetchOptionParentOneCardData = {
+//             method: "POST",
+//             headers: {
+//                 "Content-Type": "application/json"
+//             },
+//             body: JSON.stringify(newParentOneCardData)
+//         }
 
-        const fetchOptionStudentCardData = {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(newStudentCardData)
-        }
+//         const newParentTwoCardData = {
+//             //studentId: newStudentId, //<----------------needs value of newStudentId
+//             parentName: parentOne.parentName,
+//             primaryContact: parentOne.primaryContact,  
+//             parentPhone: parentOne.parentPhone
+//         }
 
-        const newParentOneCardData = {
-            //  ? studentId: studentCard.id, ?
-            parentName: parentOne.parentName,
-            primaryContact: parentOne.primaryContact,  
-            parentPhone: parentOne.parentPhone
-        }
+//         const fetchOptionParentTwoCardData = {
+//             method: "POST",
+//             headers: {
+//                 "Content-Type": "application/json"
+//             },
+//             body: JSON.stringify(newParentTwoCardData)
+//         }
 
-        const fetchOptionParentOneCardData = {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(newParentOneCardData)
-        }
-
-        const newParentTwoCardData = {
-            //  ? studentId: studentCard.id, ?
-            parentName: parentOne.parentName,
-            primaryContact: parentOne.primaryContact,  
-            parentPhone: parentOne.parentPhone
-        }
-
-        const fetchOptionParentTwoCardData = {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(newParentTwoCardData)
-        }
-
-/*~~~~~~~POST STUDENT, PARENT ONE, PARENT TWO STATE TO API; REROUTE TO ROSTER VIEW ~~~~~~~~~~*/
-        return fetch("http://localhost:8088/students", fetchOptionStudentCardData)
-        
-                    //  ? 2nd fetch and fetchoption post for parent 1  ? 
-                    //  ? 3rd fetch and fetchoption post for parent 2  ?
-        
-            .then(() => { 
-                history.push("/students")//back to roster view
-            })
-     }
+// /*~~~~~~~POST STUDENT, PARENT ONE, PARENT TWO STATE TO API; REROUTE TO ROSTER VIEW ~~~~~~~~~~*/
+       
+//             fetch("http://localhost:8088/students", fetchOptionStudentCardData)        
+//             .then(
+//                 fetch("http://localhost:8088/students")
+//                     .then(response => response.json())
+//                     .then((updatedStudentAPIArray) => {getStudentIdForParentObjects(updatedStudentAPIArray)})    //.id on end of updatedstudentapiarray to get the id for just the last posted object
+//                     .then(fetch("http://localhost:8088/parents", fetchOptionParentOneCardData))
+//                     .then(fetch("http://localhost:8088/parents", fetchOptionParentTwoCardData))
+//                     //.then(() => {history.push("/students")})//back to roster view
+//             )
 
 
 /*~~~~~~~FORM STARTS HERE ~~~~~~~~~~*/
+
     return (
         <form className="studentForm">
 
@@ -150,7 +144,7 @@ export const StudentForm = () => {
                     <input
                         onChange={
                             (evt) => {
-                                modifyStudentCard(name, evt.target.value)
+                                modifyStudentCard("name", evt.target.value)  //restricted globals??
                             }
                         }
                         required autoFocus
@@ -169,7 +163,7 @@ export const StudentForm = () => {
                     <input
                         onChange={
                             (evt) => {
-                                modifyParentOne(parentName, evt.target.value)
+                                modifyParentOne("parentName", evt.target.value)
                             }
                         }
                         required autoFocus
@@ -187,7 +181,7 @@ export const StudentForm = () => {
                     <input
                          onChange={
                             (evt) => {
-                                modifyParentOne(primaryContact, evt.target.checked)
+                                modifyParentOne("primaryContact", evt.target.checked)
                             }
                         }
                         type="checkbox" />
@@ -201,7 +195,7 @@ export const StudentForm = () => {
                     <input
                         onChange={
                             (evt) => {
-                                modifyParentOne(parentOne, evt.target.value)
+                                modifyParentOne("parentOne", evt.target.value)
                             }
                         }
                         required autoFocus
@@ -220,7 +214,7 @@ export const StudentForm = () => {
                     <input
                         onChange={
                             (evt) => {
-                                modifyParentTwo(parentName, evt.target.value)
+                                modifyParentTwo("parentName", evt.target.value)
                             }
                         }
                         required autoFocus
@@ -238,7 +232,7 @@ export const StudentForm = () => {
                     <input
                         onChange={
                             (evt) => {
-                                modifyParentTwo(primaryContact, evt.target.checked)
+                                modifyParentTwo("primaryContact", evt.target.checked)
                             }
                         }
                         type="checkbox" />
@@ -252,7 +246,7 @@ export const StudentForm = () => {
                     <input
                         onChange={
                             (evt) => {
-                                modifyParentTwo(parentPhone, evt.target.value)
+                                modifyParentTwo("parentPhone", evt.target.value)
                             }
                         }
                         required autoFocus
@@ -270,7 +264,7 @@ export const StudentForm = () => {
                     <input
                     onChange={
                         (evt) => {
-                            modifyStudentCard(mapMath, evt.target.value)
+                            modifyStudentCard("mapMath", evt.target.value)
                         }
                     }
                         required autoFocus
@@ -288,7 +282,7 @@ export const StudentForm = () => {
                     <input
                          onChange={
                             (evt) => {
-                                modifyStudentCard(mapReading, evt.target.value)
+                                modifyStudentCard("mapReading", evt.target.value)
                             }
                         }
                         required autoFocus
@@ -306,7 +300,7 @@ export const StudentForm = () => {
                     <input
                          onChange={
                             (evt) => {
-                                modifyStudentCard(tla, evt.target.value)
+                                modifyStudentCard("tla", evt.target.value)
                             }
                         }
                         required autoFocus
@@ -324,7 +318,7 @@ export const StudentForm = () => {
                     <input
                          onChange={
                             (evt) => {
-                                modifyStudentCard(rocketmath, evt.target.value)
+                                modifyStudentCard("rocketmath", evt.target.value)
                             }
                         }
                         required autoFocus
@@ -342,7 +336,7 @@ export const StudentForm = () => {
                     <input
                      onChange={
                         (evt) => {
-                            modifyStudentCard(writing, evt.target.value)
+                            modifyStudentCard("writing", evt.target.value)
                         }
                     }
                         required autoFocus
@@ -360,7 +354,7 @@ export const StudentForm = () => {
                     <input
                      onChange={
                         (evt) => {
-                            modifyStudentCard(socialEmotional, evt.target.value)
+                            modifyStudentCard("socialEmotional", evt.target.value)
                         }
                     }
                         required autoFocus
@@ -372,7 +366,7 @@ export const StudentForm = () => {
             </fieldset>
 
 {/*~~~~~~~FORM BUTTONS ~~~~~~~~~~*/}            
-<button onClick={saveConferenceCard} className="btn btn-primary">
+<button /*onClick={saveConferenceCard}*/className="btn btn-primary">
                 Save
             </button>
 
@@ -381,3 +375,4 @@ export const StudentForm = () => {
             </button>
         </form>
     )}
+//}
