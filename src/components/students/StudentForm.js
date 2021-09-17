@@ -1,5 +1,5 @@
 
-import React, { useState } from "react"
+import React, { useState, useEffect} from "react"
 import { useHistory } from "react-router-dom"
 
 
@@ -27,20 +27,33 @@ export const StudentForm = () => {
         parentPhone: ""
     })
 
+    const [allStudents, setAllStudents] = useState([])
+
     const history = useHistory()
-
+    
+    
     /*~~~~~~~INVOKED IN CHAINED .THEN SECTION ~~~~~~~~~~*/
-    const fetchParentArray = () => {
-        fetch("http://localhost:8088/parents")
-    }
-
     const fetchStudentArray = () => {
-        fetch("http://localhost:8088/students")
-            .then(response => response.json())
+        return fetch("http://localhost:8088/students") //useEffect
+        .then(response => response.json())
+        .then((data) => setAllStudents(data))
     }
+    const fetchParentArray = () => {
+       return fetch("http://localhost:8088/parents") 
+       .then(response => response.json())
 
+    }
+    
+    
+    useEffect( 
+        () => {
+            fetchStudentArray()
+        },
+        []
+    )
+   
 
-    /*~~~~~~~INVOKED IN FORM.  USER INPUT COPY GETS STORED ABOVE WITH USESTATE HOOKS ~~~~~~~~~~*/  //If these 3 don't work, old version @line 1 //     
+    /*~~~~~~~INVOKED IN FORM.  USER INPUT COPY GETS STORED ABOVE WITH USESTATE HOOKS ~~~~~~~~~~*/  
     const modifyStudentCard = (propertyToModify, newValue) => {
         const studentCardCopy = { ...studentCard }
         studentCardCopy[propertyToModify] = newValue
@@ -59,8 +72,11 @@ export const StudentForm = () => {
     }
 
 
+
     /*~~~~~~~ INVOKED AT SAVE BUTTON ~~~~~~~~~~*/
-    const SaveConferenceCard = () => {
+    const SaveConferenceCard = (event) => {
+        event.preventDefault()
+        debugger;
 
 
         /*~~~~~~~CREATE NEW STUDENT OBJECT AND FETCH OPTIONS ~~~~~~~~~~*/
@@ -83,31 +99,36 @@ export const StudentForm = () => {
             body: JSON.stringify(newStudentCardData)
         }
 
-        /*~~~~~~~CREATE NEW PARENT ONE AND TWO OBJECTS AND FETCH OPTIONS ~~~~~~~~~~*/
-        const newParentOneCardData = {
-            //studentId: //needs value of newStudentId
-            parentName: parentOne.parentName,
-            primaryContact: parentOne.primaryContact,
-            parentPhone: parentOne.parentPhone
-        }
+        /*~~~~~~~CREATE STUDENT ID FOREIGN KEY FOR PARENT OBJECTS ~~~~~~~~~~*/
+        const lastIndex = allStudents.length
+        const newStudentId = lastIndex + 1
 
 
-        const fetchOptionParentOneCardData = {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(newParentOneCardData)
-        }
-
-        const newParentTwoCardData = {
-            //studentId: needs value of newStudentId
-            parentName: parentOne.parentName,
-            primaryContact: parentOne.primaryContact,
-            parentPhone: parentOne.parentPhone
-        }
-
-        const fetchOptionParentTwoCardData = {
+            /*~~~~~~~CREATE NEW PARENT ONE AND TWO OBJECTS AND FETCH OPTIONS ~~~~~~~~~~*/
+            const newParentOneCardData = {
+                studentId: newStudentId,
+                parentName: parentOne.parentName,
+                primaryContact: parentOne.primaryContact,
+                parentPhone: parentOne.parentPhone
+            }
+            
+            
+            const fetchOptionParentOneCardData = {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(newParentOneCardData)
+            }
+            
+            const newParentTwoCardData = {
+                studentId: newStudentId,
+                parentName: parentTwo.parentName,
+                primaryContact: parentTwo.primaryContact,
+                parentPhone: parentTwo.parentPhone
+            }
+            
+            const fetchOptionParentTwoCardData = {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -115,29 +136,25 @@ export const StudentForm = () => {
             body: JSON.stringify(newParentTwoCardData)
         }
 
-        //invoked after the student object is posted
-        const getStudentIdForParentObjects = (studentArray) => {  
-            const newStudentId = studentArray.length - 1
-            return newStudentId
-        }
-
         /*~~~~~~~POST STUDENT, PARENT ONE, PARENT TWO STATE TO API; REROUTE TO ROSTER VIEW ~~~~~~~~~~*/
-        //return without halting the chain??
-        fetch("http://localhost:8088/students", fetchOptionStudentCardData)
-            .then(fetchStudentArray())
-            .then((updatedStudentAPIArray) => { getStudentIdForParentObjects(updatedStudentAPIArray) })    
-            .then(fetchParentArray(), fetchOptionParentOneCardData)
-            .then(fetchParentArray(), fetchOptionParentTwoCardData)
-            .then(() => {history.push("/students")})//back to roster view
+       
+        
+       return fetch("http://localhost:8088/students", fetchOptionStudentCardData)          //post new student object
+            .then(fetchStudentArray())                                                     //get updated student state; store as allStudents
+            .then(fetch("http://localhost:8088/parents", fetchOptionParentOneCardData))    //post parent 1 object
+            .then(fetch("http://localhost:8088/parents", fetchOptionParentTwoCardData))    //post parent 2 object
+            .then(() => {return history.push("/students")})                                //back to roster view
    
+
      } //end SaveConferenceCard()
+
 
 
      /*~~~~~~~FORM STARTS HERE ~~~~~~~~~~*/
 
         return (
             <>
-                <form onSubmit={(evt) => evt.preventDefault()} className="studentForm">
+                <form className="studentForm">
 
                     <h2 className="form-group">Student Conference Card</h2>
 
@@ -147,7 +164,7 @@ export const StudentForm = () => {
                             <input
                                 onChange={
                                     (evt) => {
-                                        modifyStudentCard("name", evt.target.value)  //restricted globals??
+                                        modifyStudentCard("name", evt.target.value)  
                                     }
                                 }
                                 required autoFocus
@@ -198,7 +215,7 @@ export const StudentForm = () => {
                             <input
                                 onChange={
                                     (evt) => {
-                                        modifyParentOne("parentOne", evt.target.value)
+                                        modifyParentOne("parentPhone", evt.target.value)
                                     }
                                 }
                                 required autoFocus
@@ -260,7 +277,7 @@ export const StudentForm = () => {
                         </div>
                     </fieldset>
 
-                    {/*~~~~~~~FORM ACADEMIC DATA ~~~~~~~~~~*/}
+                    {/*~~~~~~~STUDENT ACADEMIC INFO ~~~~~~~~~~*/}
                     <fieldset>
                         <div className="form-group">
                             <label htmlFor="map-math-rit">MAP Math RIT:</label>
@@ -372,7 +389,7 @@ export const StudentForm = () => {
                     <fieldset>
 
                         {/*~~~~~~~FORM BUTTONS ~~~~~~~~~~*/}
-                        <button className="btn btn-primary" onClick={() => SaveConferenceCard}>  
+                        <button className="btn btn-primary" onClick={SaveConferenceCard}>  
                             Save
                         </button>
 
