@@ -34,15 +34,15 @@ export const StudentForm = () => {
     
     /*~~~~~~~INVOKED IN CHAINED .THEN SECTION ~~~~~~~~~~*/
     const fetchStudentArray = () => {
-        return fetch("http://localhost:8088/students") //useEffect
+        return fetch("http://localhost:8088/students") 
         .then(response => response.json())
         .then((data) => setAllStudents(data))
     }
-    const fetchParentArray = () => {
-       return fetch("http://localhost:8088/parents") 
-       .then(response => response.json())
+    // const fetchParentArray = () => {
+    //    return fetch("http://localhost:8088/parents") 
+    //    .then(response => response.json())
 
-    }
+    // }
     
     
     useEffect( 
@@ -76,7 +76,7 @@ export const StudentForm = () => {
     /*~~~~~~~ INVOKED AT SAVE BUTTON ~~~~~~~~~~*/
     const SaveConferenceCard = (event) => {
         event.preventDefault()
-        debugger;
+        //debugger;
 
 
         /*~~~~~~~CREATE NEW STUDENT OBJECT AND FETCH OPTIONS ~~~~~~~~~~*/
@@ -140,7 +140,7 @@ export const StudentForm = () => {
        
         
        return fetch("http://localhost:8088/students", fetchOptionStudentCardData)          //post new student object
-            .then(fetchStudentArray())                                                     //get updated student state; store as allStudents
+            .then(fetchStudentArray)      //NO PARENTHESES!                                //get updated student state; store as allStudents
             .then(fetch("http://localhost:8088/parents", fetchOptionParentOneCardData))    //post parent 1 object
             .then(fetch("http://localhost:8088/parents", fetchOptionParentTwoCardData))    //post parent 2 object
             .then(() => {return history.push("/students")})                                //back to roster view
