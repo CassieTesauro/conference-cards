@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react"
+import { Link } from "react-router-dom"
 
 export const StudentList = () => {
     
@@ -23,7 +24,7 @@ export const StudentList = () => {
                 students.map(
                     (studentObject) => {
                        if (studentObject.teacherId === parseInt(localStorage.getItem("cc_teacher"))) {
-                            return <h4 key={`student--${studentObject.id}`}>{studentObject.name}</h4> 
+                            return <h4 key={`student--${studentObject.id}`}><Link to={`/students/${studentObject.id}`}>{studentObject.name}</Link></h4> 
                         } 
                         else {
                             return ""

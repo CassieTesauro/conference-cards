@@ -3,6 +3,8 @@ import { Route } from "react-router-dom"
 import { StudentList } from "./students/StudentList"
 import { LandingPage } from "./LandingPage"
 import { StudentForm } from "./students/StudentForm"
+import { EditStudentForm } from "./students/EditStudentForm"
+
 
 
 export const ApplicationViews = () => {
@@ -17,6 +19,14 @@ export const ApplicationViews = () => {
             <Route path="/students/create">
                 <StudentForm />
             </Route>
+            <Route path="/students/:studentId(\d+)">  
+                <EditStudentForm />
+            </Route>
         </>
     )
 }
+
+
+//note:  this route will make hyperlink lead to empty student form with url changed to student id at end   <Route path="/students/:studentId(\d+)">  
+                   // <StudentForm />
+                 // </Route>
