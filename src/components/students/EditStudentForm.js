@@ -19,20 +19,29 @@ export const EditStudentForm = () => {
         },
         [studentId]
     )
-
-return(
-    <>
-    <h3>"hello"</h3>
-    </>
-)
+    
+    /*~~~~~~~FIND PARENT OBJECTS CONNECTED TO CORRECT STUDENT VIA PARAM ~~~~~~~~*/
+           
+    return (
+        <>
+            
+            <h3>Edit or delete your Conference Card</h3>
+            {expandedObjects.map(
+                    (expandedObject) => {
+                       if (expandedObject.studentId === parseInt(studentId)) {
+                            return <h4>parent object match</h4> 
+                        } 
+                        else {
+                            return ""
+                        }
+                    }
+                ) 
+            } 
+        </>
+    )
 
 } //end EditStudentForm()
 
 
 
 
-
-/*~~~~~~~FIND PARENT OBJECTS CONNECTED TO CORRECT STUDENT VIA PARAM ~~~~~~~~*/
-        // if (cardData.studentId === parseInt(studentId)) {
-        //    console.log("data match found")
-        // }
