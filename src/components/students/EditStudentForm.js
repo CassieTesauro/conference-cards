@@ -1,37 +1,38 @@
-//user clicks roster hyperlink and redirects to that student's form with the studentobject data already inputed.  Can make changes or delete.
-
-//main component shoud render form with that student's data from api
-
-
 import React, { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 
 
-
 export const EditStudentForm = () => {
 
-    const [box, viewData] = useState({}) //stores the individual student we fetch in the useEffect
-    const { studentId } = useParams() //studentId matches with the appview route 
+    const [expandedObjects, storeExpandedObjects] = useState([]) //stores the individual student we fetch in the useEffect
+    const { studentId } = useParams() //studentId matches with the appview route path
+    
 
+    /*~~~~~~~FETCH PARENT OBJECTS EXPANDED WITH STUDENT OBJECT DATA; STORE IN 'expandedObjects' ~~~~~~~~*/
     useEffect(
-        () => {//function fetches student object state from api based on studentid.  make a useState to store it.
-            return fetch(`http://localhost:8088/parents?_expand=student`)
-            .then(response => response.json())
-            .then((fetchedData) => {
-                viewData(fetchedData)
-            })
+        () => {
+                fetch(`http://localhost:8088/parents?_expand=student`)
+                .then(response => response.json())
+                .then((fetchedData) => {
+                    storeExpandedObjects(fetchedData)
+                })
         },
         [studentId]
-        )
-        
-       if parent.studentId = parseInt(studentId) {
-           
-       }
-
-    return (
-        <>
-            <h2>Update or Delete your Conference Card for </h2>
-        </>
     )
 
-}
+return(
+    <>
+    <h3>"hello"</h3>
+    </>
+)
+
+} //end EditStudentForm()
+
+
+
+
+
+/*~~~~~~~FIND PARENT OBJECTS CONNECTED TO CORRECT STUDENT VIA PARAM ~~~~~~~~*/
+        // if (cardData.studentId === parseInt(studentId)) {
+        //    console.log("data match found")
+        // }
