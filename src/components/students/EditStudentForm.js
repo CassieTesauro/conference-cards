@@ -34,13 +34,8 @@ export const EditStudentForm = () => {
 
     /*~~~~~~~FETCH PARENT OBJECTS EXPANDED WITH STUDENT OBJECT DATA; STORE IN 'expandedObjects' ~~~~~~~~*/
     useEffect(
- ct-conference-cards-10
         () => {
             fetch(`http://localhost:8088/parents?_expand=student`)
-
-    () => {
-                fetch(`http://localhost:8088/parents?_expand=student`)
-
                 .then(response => response.json())
                 .then((fetchedData) => {
                     storeExpandedObjects(fetchedData)
@@ -48,7 +43,6 @@ export const EditStudentForm = () => {
         },
         [studentId]
     )
-
 
 
 
@@ -392,27 +386,6 @@ return (
         </form>
 
     </>
-
-    
-    /*~~~~~~~FIND PARENT OBJECTS CONNECTED TO CORRECT STUDENT VIA PARAM; RENDER FORM WITH CORRECT DATA~~~~~~~~*/
-           
-    return (
-        <>
-            
-            <h3>Edit or delete your Conference Card</h3>
-            {expandedObjects.map(
-                    (expandedObject) => {
-                       if (expandedObject.studentId === parseInt(studentId)) {
-                            return <h4>{expandedObject.parentName}</h4> //can I get the form here with saved input already populated and able to save changes to input?
-                        } 
-                        else {
-                            return ""
-                        }
-                    }
-                ) 
-            } 
-        </>
-    )
 
 ) //end of return with form jsx
                     
