@@ -38,12 +38,6 @@ export const StudentForm = () => {
         .then(response => response.json())
         .then((data) => setAllStudents(data))
     }
-    // const fetchParentArray = () => {
-    //    return fetch("http://localhost:8088/parents") 
-    //    .then(response => response.json())
-
-    // }
-    
     
     useEffect( 
         () => {
