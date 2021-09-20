@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
-import { useHistory } from "react-router-dom"
 
 export const EditStudentForm = () => {
 
@@ -9,7 +8,6 @@ export const EditStudentForm = () => {
 
 
 
-    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~FROM STUDENTFORM.JS START~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
     const [studentCard, updateStudentCard] = useState({
         name: "",
@@ -33,9 +31,6 @@ export const EditStudentForm = () => {
         parentPhone: ""
     })
 
-    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~FROM STUDENTFORM.JS END~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
-
 
     /*~~~~~~~FETCH PARENT OBJECTS EXPANDED WITH STUDENT OBJECT DATA; STORE IN 'expandedObjects' ~~~~~~~~*/
     useEffect(
@@ -50,7 +45,6 @@ export const EditStudentForm = () => {
     )
 
 
-    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~FROM STUDENTFORM.JS START~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
     /*~~~~~~~INVOKED IN FORM.  USER INPUT COPY GETS STORED ABOVE WITH USESTATE HOOKS ~~~~~~~~~~*/
     const modifyStudentCard = (propertyToModify, newValue) => {
@@ -69,7 +63,7 @@ export const EditStudentForm = () => {
         parentTwoCopy[propertyToModify] = newValue
         updateParentTwo(parentTwoCopy)
     }
-    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~FROM STUDENTFORM.JS END~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
 
     /*~~~~~~~ INVOKED AT SAVE CHANGES BUTTON ~~~~~~~~~~*/
     const SaveEditedCard = (event) => {
@@ -97,7 +91,7 @@ export const EditStudentForm = () => {
         }
 
 
-        /*~~~~~~~CREATE NEW PARENT ONE AND TWO OBJECTS AND FETCH OPTIONS ~~~~~~~~~~*/
+        /*~~~~~~~CREATE REPLACEMENT PARENT ONE AND TWO OBJECTS AND FETCH OPTIONS ~~~~~~~~~~*/
         const newParentOneCardData = {
             //studentId: newStudentId,
             parentName: parentOne.parentName,
@@ -132,34 +126,27 @@ export const EditStudentForm = () => {
 
     } //end SaveEditedCard()  
 
- 
-   
-   const foundParentOne = expandedObjects.find(parent => parent.studentId === parseInt(studentId))  //returns 1st p
 
-   const foundParentTwo = expandedObjects.find(parent => parent.id !== foundParentOne.id ? parent.studentId === parseInt(studentId) : "")  //returns 2st p
-  
-    console.log(foundParentOne);
-    console.log(foundParentTwo);
-    
-    return (
-        <>
-            
-            <h3>Edit or delete your Conference Card</h3>
-            {/* {expandedObjects.map(
-                    (expandedObject) => {
-                       if (expandedObject.studentId === parseInt(studentId)) { */}  
-                       
-                       
-                       
-                       
-                       
-                            
-{/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~FROM STUDENTFORM.JS START~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-                            
-                            /*~~~~~~~FORM STARTS HERE ~~~~~~~~~~*/}
-                            
-                            
-                                
+
+    /*~~~~~~~FIND INSTEAD OF MAP; SOLVES DOUBLE FORM RENDER ISSUE ~~~~~~~~~~*/
+    const foundParentOne = expandedObjects.find(parent => parent.studentId === parseInt(studentId))  //returns 1st p
+
+    const foundParentTwo = expandedObjects.find(parent => parent.id !== foundParentOne.id ? parent.studentId === parseInt(studentId) : "")  //returns 2st p
+   
+
+    /*~~~~~~~CALLED IN FORM AT CHECKBOX ~~~~~~~~~~*/
+    const parentOnePrimary = foundParentOne?.primaryContact ? true : false
+
+    const parentTwoPrimary = foundParentTwo?.primaryContact ? true : false
+
+
+
+/*~~~~~~~FORM STARTS HERE ~~~~~~~~~~*/
+return (
+    <>
+
+        <h3>Edit or delete your Conference Card</h3>
+
         <form className="studentForm">
 
             <h2 className="form-group">Student Conference Card</h2>
@@ -170,14 +157,14 @@ export const EditStudentForm = () => {
                     <input
                         onChange={
                             (evt) => {
-                                modifyStudentCard("name", evt.target.value)  
+                                modifyStudentCard("name", evt.target.value)
                             }
                         }
                         required autoFocus
                         type="text" id="student-name"
                         className="form-control"
                         defaultValue={foundParentOne?.student.name}  // ? = if that first property doesn't exist on first render, don't worry and move on
-                        />
+                    />
                 </div>
             </fieldset>
 
@@ -195,7 +182,7 @@ export const EditStudentForm = () => {
                         required autoFocus
                         type="text" id="guardian-one-name"
                         className="form-control"
-                        defaultValue={foundParentOne?.parentName}                    />
+                        defaultValue={foundParentOne?.parentName} />
                 </div>
             </fieldset>
 
@@ -209,9 +196,9 @@ export const EditStudentForm = () => {
                                 modifyParentOne("primaryContact", evt.target.checked)
                             }
                         }
-                        type="checkbox" 
-                        checked={foundParentOne?.student.primaryContact}
-                        />
+                        type="checkbox"
+                        checked={parentOnePrimary ? "checked" : ""}  //if true, "checked"?
+                    />
                 </div>
             </fieldset>
 
@@ -228,7 +215,7 @@ export const EditStudentForm = () => {
                         required autoFocus
                         type="text" id="guardian-one-phone"
                         className="form-control"
-                        defaultValue={foundParentOne?.parentPhone}                    />
+                        defaultValue={foundParentOne?.parentPhone} />
                 </div>
             </fieldset>
 
@@ -246,7 +233,7 @@ export const EditStudentForm = () => {
                         required autoFocus
                         type="text" id="guardian-two-name"
                         className="form-control"
-                        defaultValue={foundParentTwo?.parentName}                    />
+                        defaultValue={foundParentTwo?.parentName} />
                 </div>
             </fieldset>
 
@@ -260,8 +247,9 @@ export const EditStudentForm = () => {
                                 modifyParentTwo("primaryContact", evt.target.checked)
                             }
                         }
-                        type="checkbox" 
-                        checked={foundParentTwo?.student.primaryContact}/>                </div>
+                        type="checkbox"
+                        checked={parentTwoPrimary ? "checked" : ""}  />                
+                    </div>
             </fieldset>
 
 
@@ -277,7 +265,7 @@ export const EditStudentForm = () => {
                         required autoFocus
                         type="text" id="guardian-two-phone"
                         className="form-control"
-                        defaultValue={foundParentTwo?.parentPhone}                    />
+                        defaultValue={foundParentTwo?.parentPhone} />
                 </div>
             </fieldset>
 
@@ -294,7 +282,7 @@ export const EditStudentForm = () => {
                         required autoFocus
                         type="text" id="map-math-rit"
                         className="form-control"
-                        defaultValue={foundParentOne?.student.mapMath}                    />
+                        defaultValue={foundParentOne?.student.mapMath} />
                 </div>
             </fieldset>
 
@@ -311,7 +299,7 @@ export const EditStudentForm = () => {
                         required autoFocus
                         type="text" id="map-reading-rit"
                         className="form-control"
-                        defaultValue={foundParentOne?.student.mapReading}                    />
+                        defaultValue={foundParentOne?.student.mapReading} />
                 </div>
             </fieldset>
 
@@ -328,7 +316,7 @@ export const EditStudentForm = () => {
                         required autoFocus
                         type="text" id="tla"
                         className="form-control"
-                        defaultValue={foundParentOne?.student.tla}                    />
+                        defaultValue={foundParentOne?.student.tla} />
                 </div>
             </fieldset>
 
@@ -345,7 +333,7 @@ export const EditStudentForm = () => {
                         required autoFocus
                         type="text" id="rocket-math"
                         className="form-control"
-                        defaultValue={foundParentOne?.student.rocketmath}                    />
+                        defaultValue={foundParentOne?.student.rocketmath} />
                 </div>
             </fieldset>
 
@@ -362,7 +350,7 @@ export const EditStudentForm = () => {
                         required autoFocus
                         type="text" id="writing"
                         className="form-control"
-                        defaultValue={foundParentOne?.student.writing}                    />
+                        defaultValue={foundParentOne?.student.writing} />
                 </div>
             </fieldset>
 
@@ -379,7 +367,7 @@ export const EditStudentForm = () => {
                         required autoFocus
                         type="text" id="soc-emo"
                         className="form-control"
-                        defaultValue={foundParentOne?.student.socialEmotional}                    />
+                        defaultValue={foundParentOne?.student.socialEmotional} />
                 </div>
             </fieldset>
 
@@ -387,7 +375,7 @@ export const EditStudentForm = () => {
             <fieldset>
 
                 {/*~~~~~~~FORM BUTTONS ~~~~~~~~~~*/}
-                <button className="btn btn-primary" onClick={SaveEditedCard}>  
+                <button className="btn btn-primary" onClick={SaveEditedCard}>
                     Save Changes
                 </button>
 
@@ -396,12 +384,11 @@ export const EditStudentForm = () => {
                 </button>
             </fieldset>
         </form>
-    
-        </>
-    )
 
+    </>
 
-
+) //end of return with form jsx
+                    
 } //end EditStudentForm()
 
 
