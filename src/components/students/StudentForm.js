@@ -130,19 +130,24 @@ export const StudentForm = () => {
             body: JSON.stringify(newParentTwoCardData)
         }
 
-        /*~~~~~~~POST STUDENT, PARENT ONE, PARENT TWO STATE TO API; REROUTE TO ROSTER VIEW ~~~~~~~~~~*/
-       
         
-       return fetch("http://localhost:8088/students", fetchOptionStudentCardData)          //post new student object
-            .then(fetchStudentArray)      //NO PARENTHESES!                                //get updated student state; store as allStudents
-            .then(fetch("http://localhost:8088/parents", fetchOptionParentOneCardData))    //post parent 1 object
-            .then(fetch("http://localhost:8088/parents", fetchOptionParentTwoCardData))    //post parent 2 object
-            .then(() => {return history.push("/students")})                                //back to roster view
-   
-
-     } //end SaveConferenceCard()
-
-
+        /*~~~~~~~POST STUDENT, PARENT ONE, PARENT TWO STATE TO API; REROUTE TO ROSTER VIEW ~~~~~~~~~~*/
+        
+        
+        return fetch("http://localhost:8088/students", fetchOptionStudentCardData)          //post new student object
+        .then(fetchStudentArray)      //NO PARENTHESES!                                //get updated student state; store as allStudents
+        .then(fetch("http://localhost:8088/parents", fetchOptionParentOneCardData))    //post parent 1 object
+        .then(fetch("http://localhost:8088/parents", fetchOptionParentTwoCardData))    //post parent 2 object
+        .then(() => {return history.push("/students")})                                //back to roster view
+        
+        
+    } //end SaveConferenceCard()
+    
+     /*~~~~~~~INVOKED AT CANCEL BUTTON ~~~~~~~~~~*/
+    const CancelConferenceCard = (event) => {
+        event.preventDefault()
+        return history.push("/students")
+    }
 
      /*~~~~~~~FORM STARTS HERE ~~~~~~~~~~*/
 
@@ -387,8 +392,8 @@ export const StudentForm = () => {
                             Save
                         </button>
 
-                        <button className="btn btn-primary">
-                            Delete Student
+                        <button className="btn btn-primary" onClick={CancelConferenceCard}>
+                            Cancel
                         </button>
                     </fieldset>
                 </form>
