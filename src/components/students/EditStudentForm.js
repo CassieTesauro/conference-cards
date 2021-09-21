@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
+import { useHistory } from "react-router-dom"
+
+//EDIT LOGIC NOTES on render for student's page, expanded objects, found parent one, found parent two all are running.  Since the two found parents depend on the expandedObjects data already being present, they will both be undefined on first render.  That means the three useEffects after the first one are rendering before the expandedObjects state has been set.  so the 3rd and 4th use effect will show up in the network tab as undefined, but the first one works because we're using the studentID.  Then when the expandedobjects state changes from the initial array to to the api state, those useeffects run again.   this time they have the expanded object state so they are able to work correctly.  
+
+//a prop is a parameter/argument that you can pass to another component.  they can't me modified in the child that it's passed to.
 
 export const EditStudentForm = () => {
-
-    const [expandedObjects, storeExpandedObjects] = useState([]) //stores the individual student we fetch in the useEffect
+    
+    const [expandedObjects, storeExpandedObjects] = useState([]) //stores http://localhost:8088/parents?_expand=student
     const { studentId } = useParams() //studentId matches with the appview route path
+    const history = useHistory()
 
 
-
-
-    const [studentCard, updateStudentCard] = useState({
+    const [studentCard, updateStudentCard] = useState({ //on render stores `http://localhost:8088/students/${parseInt(studentId)}; changes as state is changed in form
         name: "",
         mapMath: "",
         mapReading: "",
@@ -18,32 +22,70 @@ export const EditStudentForm = () => {
         writing: "",
         socialEmotional: ""
     })
-
+    
     const [parentOne, updateParentOne] = useState({
-        parentName: "",
+        parentName: "", 
         primaryContact: false,
         parentPhone: ""
     })
-
+    
     const [parentTwo, updateParentTwo] = useState({
         parentName: "",
         primaryContact: false,
         parentPhone: ""
     })
+    
+    /*~~~~~~~NOTE!  THESE RUN AFTER INITIAL RENDER WHICH IS WHY THEY SHOW US AS UNDEFINED AT FIRST AND WHTY WE NEED A QUESTION MARKFIND THE MATCHING PARENT OBJECTS USING THESE FINDS INSTEAD OF MAP SOLVES DOUBLE FORM RENDER ISSUE ~~~~~~~~~~*/
+    const foundParentOne = expandedObjects.find(parent => parent.studentId === parseInt(studentId))  //returns 1st parent object
+    
+    const foundParentTwo = expandedObjects.find(parent => parent.id !== foundParentOne.id ? parent.studentId === parseInt(studentId) : "")  //returns 2st parent object
+    
+    /*~~~~~~~all happening on initial render.  then all watch for dep array to change and running againFETCH PARENT OBJECTS EXPANDED WITH STUDENT OBJECT DATA; STORE IN 'expandedObjects' STATE HOOK~~~~~~~~*/
 
-
-    /*~~~~~~~FETCH PARENT OBJECTS EXPANDED WITH STUDENT OBJECT DATA; STORE IN 'expandedObjects' ~~~~~~~~*/
     useEffect(
         () => {
             fetch(`http://localhost:8088/parents?_expand=student`)
+            .then(response => response.json())
+            .then((fetchedData) => {
+                storeExpandedObjects(fetchedData)
+            })
+        },
+        [studentId]
+        )
+        
+       
+    
+        //oRUNS ON INITIAL, ONLY STUDENT FOUND BC EXPANDED HASN'T BEEN POPULATED YET.  RUNDS AGAIN ALL ARE FOUND
+    useEffect(
+        () => {
+            fetch(`http://localhost:8088/students/${parseInt(studentId)}`)
                 .then(response => response.json())
                 .then((fetchedData) => {
-                    storeExpandedObjects(fetchedData)
+                    updateStudentCard(fetchedData)
                 })
         },
         [studentId]
     )
-
+    useEffect(
+        () => {
+            fetch(`http://localhost:8088/parents/${foundParentOne?.id}`)  //undefined at first render bc parent is not established u
+                .then(response => response.json())
+                .then((fetchedData) => {
+                    updateParentOne(fetchedData)
+                })
+        },
+        [expandedObjects]
+    )
+    useEffect(
+        () => {
+            fetch(`http://localhost:8088/parents/${foundParentTwo?.id}`) 
+                .then(response => response.json())
+                .then((fetchedData) => {
+                    updateParentTwo(fetchedData)
+                })
+        },
+        [expandedObjects]
+    )
 
 
     /*~~~~~~~INVOKED IN FORM.  USER INPUT COPY GETS STORED ABOVE WITH USESTATE HOOKS ~~~~~~~~~~*/
@@ -65,14 +107,19 @@ export const EditStudentForm = () => {
     }
 
 
+    /*~~~~~~~CALLED IN FORM AT CHECKBOX; SAVED BOOLEAN VALUE POPULATES ~~~~~~~~~~*/
+    const parentOnePrimary = foundParentOne?.primaryContact ? true : false
+
+    const parentTwoPrimary = foundParentTwo?.primaryContact ? true : false
+
+
     /*~~~~~~~ INVOKED AT SAVE CHANGES BUTTON ~~~~~~~~~~*/
     const SaveEditedCard = (event) => {
-        event.preventDefault()
-
+        event.preventDefault()    
 
         /*~~~~~~~CREATE REPLACEMENT STUDENT OBJECT AND FETCH OPTIONS ~~~~~~~~~~*/
         const newStudentCardData = {
-            name: studentCard.name,
+            name: studentCard.name,    
             teacherId: parseInt(localStorage.getItem("cc_teacher")),
             mapMath: studentCard.mapMath,
             mapReading: studentCard.mapReading,
@@ -83,9 +130,9 @@ export const EditStudentForm = () => {
         }
 
         const fetchOptionStudentCardData = {
-            method: "PUT",
+            method: "PATCH",    
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json"    
             },
             body: JSON.stringify(newStudentCardData)
         }
@@ -93,7 +140,7 @@ export const EditStudentForm = () => {
 
         /*~~~~~~~CREATE REPLACEMENT PARENT ONE AND TWO OBJECTS AND FETCH OPTIONS ~~~~~~~~~~*/
         const newParentOneCardData = {
-            //studentId: newStudentId,
+            studentId: parentOne.studentId,    
             parentName: parentOne.parentName,
             primaryContact: parentOne.primaryContact,
             parentPhone: parentOne.parentPhone
@@ -101,47 +148,48 @@ export const EditStudentForm = () => {
 
 
         const fetchOptionParentOneCardData = {
-            method: "PUT",
+            method: "PATCH", //patch instead of put.  if patch doesn't find an id it doesn't execute    
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json"    
             },
             body: JSON.stringify(newParentOneCardData)
         }
 
         const newParentTwoCardData = {
-            //studentId: newStudentId,
+            studentId: parentTwo.newStudentId,    
             parentName: parentTwo.parentName,
             primaryContact: parentTwo.primaryContact,
             parentPhone: parentTwo.parentPhone
         }
 
         const fetchOptionParentTwoCardData = {
-            method: "PUT",
+            method: "PATCH",    
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json"    
             },
             body: JSON.stringify(newParentTwoCardData)
         }
+
+
+         /*~~~~~~~POST STUDENT, PARENT ONE, PARENT TWO STATE TO API; REROUTE TO ROSTER VIEW ~~~~~~~~~~*/
+       
+        
+       return fetch(`http://localhost:8088/students/${parseInt(studentId)}`, fetchOptionStudentCardData)     //put student object
+       .then(fetch(`http://localhost:8088/parents/${foundParentOne.id}`, fetchOptionParentOneCardData))    //put parent 1 object
+       .then(fetch(`http://localhost:8088/parents/${foundParentTwo.id}`, fetchOptionParentTwoCardData))    //put parent 2 object
+       .then(() => {return history.push("/students")})
 
 
     } //end SaveEditedCard()  
 
 
 
-    /*~~~~~~~FIND INSTEAD OF MAP; SOLVES DOUBLE FORM RENDER ISSUE ~~~~~~~~~~*/
-    const foundParentOne = expandedObjects.find(parent => parent.studentId === parseInt(studentId))  //returns 1st p
-
-    const foundParentTwo = expandedObjects.find(parent => parent.id !== foundParentOne.id ? parent.studentId === parseInt(studentId) : "")  //returns 2st p
-   
-
-    /*~~~~~~~CALLED IN FORM AT CHECKBOX ~~~~~~~~~~*/
-    const parentOnePrimary = foundParentOne?.primaryContact ? true : false
-
-    const parentTwoPrimary = foundParentTwo?.primaryContact ? true : false
 
 
 
-/*~~~~~~~FORM STARTS HERE ~~~~~~~~~~*/
+
+/*~~~~~~~FORM STARTS HERE ~~~~~~~~~~
+note from steve- avoid default in react bd it's an uncontrolled value . use value instead and do value= statevariable.property  */
 return (
     <>
 
@@ -163,7 +211,7 @@ return (
                         required autoFocus
                         type="text" id="student-name"
                         className="form-control"
-                        defaultValue={foundParentOne?.student.name}  // ? = if that first property doesn't exist on first render, don't worry and move on
+                        value={studentCard.name}  // ? = optional chaining; if that first property doesn't exist on first render, don't worry and move on
                     />
                 </div>
             </fieldset>
@@ -182,7 +230,7 @@ return (
                         required autoFocus
                         type="text" id="guardian-one-name"
                         className="form-control"
-                        defaultValue={foundParentOne?.parentName} />
+                        value={parentOne.parentName} />
                 </div>
             </fieldset>
 
@@ -197,7 +245,7 @@ return (
                             }
                         }
                         type="checkbox"
-                        checked={parentOnePrimary ? "checked" : ""}  //if true, "checked"?
+                        checked={parentOnePrimary ? "checked" : ""}  
                     />
                 </div>
             </fieldset>
@@ -215,7 +263,7 @@ return (
                         required autoFocus
                         type="text" id="guardian-one-phone"
                         className="form-control"
-                        defaultValue={foundParentOne?.parentPhone} />
+                        value={parentOne.parentPhone} />
                 </div>
             </fieldset>
 
@@ -233,7 +281,7 @@ return (
                         required autoFocus
                         type="text" id="guardian-two-name"
                         className="form-control"
-                        defaultValue={foundParentTwo?.parentName} />
+                        value={parentTwo.parentName} />
                 </div>
             </fieldset>
 
@@ -265,7 +313,7 @@ return (
                         required autoFocus
                         type="text" id="guardian-two-phone"
                         className="form-control"
-                        defaultValue={foundParentTwo?.parentPhone} />
+                        value={parentTwo.parentPhone} />
                 </div>
             </fieldset>
 
@@ -282,7 +330,7 @@ return (
                         required autoFocus
                         type="text" id="map-math-rit"
                         className="form-control"
-                        defaultValue={foundParentOne?.student.mapMath} />
+                        value={studentCard.mapMath} />
                 </div>
             </fieldset>
 
@@ -299,7 +347,7 @@ return (
                         required autoFocus
                         type="text" id="map-reading-rit"
                         className="form-control"
-                        defaultValue={foundParentOne?.student.mapReading} />
+                        value={studentCard.mapReading} />
                 </div>
             </fieldset>
 
@@ -316,7 +364,7 @@ return (
                         required autoFocus
                         type="text" id="tla"
                         className="form-control"
-                        defaultValue={foundParentOne?.student.tla} />
+                        value={studentCard.tla} />
                 </div>
             </fieldset>
 
@@ -333,7 +381,7 @@ return (
                         required autoFocus
                         type="text" id="rocket-math"
                         className="form-control"
-                        defaultValue={foundParentOne?.student.rocketmath} />
+                        value={studentCard.rocketmath} />
                 </div>
             </fieldset>
 
@@ -350,7 +398,7 @@ return (
                         required autoFocus
                         type="text" id="writing"
                         className="form-control"
-                        defaultValue={foundParentOne?.student.writing} />
+                        value={studentCard.writing} />
                 </div>
             </fieldset>
 
@@ -367,7 +415,7 @@ return (
                         required autoFocus
                         type="text" id="soc-emo"
                         className="form-control"
-                        defaultValue={foundParentOne?.student.socialEmotional} />
+                        value={studentCard.socialEmotional} />  {/*reflects the state at the top that we're manipulating */}
                 </div>
             </fieldset>
 
@@ -376,11 +424,11 @@ return (
 
                 {/*~~~~~~~FORM BUTTONS ~~~~~~~~~~*/}
                 <button className="btn btn-primary" onClick={SaveEditedCard}>
-                    Save Changes
+                    ✅ Save Changes
                 </button>
 
                 <button className="btn btn-primary">
-                    Delete Student
+                   🗑 Delete Student  {/*delete.then(whatever function fetches the data.  you have to refetch since you've made changes to the permanent state)*/}
                 </button>
             </fieldset>
         </form>
