@@ -71,7 +71,7 @@ export const StudentForm = () => {
     const SaveConferenceCard = (event) => {
         event.preventDefault()
         
-
+debugger
 
         /*~~~~~~~CREATE NEW STUDENT OBJECT AND FETCH OPTIONS ~~~~~~~~~~*/
         const newStudentCardData = {
@@ -94,6 +94,7 @@ export const StudentForm = () => {
         }
 
         /*~~~~~~~CREATE STUDENT ID FOREIGN KEY FOR PARENT OBJECTS ~~~~~~~~~~*/
+        
         const lastIndex = allStudents.length
         const newStudentId = lastIndex + 1
 
@@ -138,15 +139,15 @@ export const StudentForm = () => {
         .then(fetchStudentArray)      //NO PARENTHESES!                                //get updated student state; store as allStudents
         .then(fetch("http://localhost:8088/parents", fetchOptionParentOneCardData))    //post parent 1 object
         .then(fetch("http://localhost:8088/parents", fetchOptionParentTwoCardData))    //post parent 2 object
-        .then(() => {return history.push("/students")})                                //back to roster view
+        .then(() => {history.push("/students")})                                //back to roster view
         
-        
+        //took off return from above history
     } //end SaveConferenceCard()
     
      /*~~~~~~~INVOKED AT CANCEL BUTTON ~~~~~~~~~~*/
     const CancelConferenceCard = (event) => {
         event.preventDefault()
-        return history.push("/students")
+        history.push("/students")  //took off return
     }
 
      /*~~~~~~~FORM STARTS HERE ~~~~~~~~~~*/

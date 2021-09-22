@@ -1,7 +1,3 @@
-//EDIT LOGIC NOTES on render for student's page, expanded objects, found parent one, found parent two all are running.  Since the two found parents depend on the expandedObjects data already being present, they will both be undefined on first render.  That means the three useEffects after the first one are rendering before the expandedObjects state has been set.  so the 3rd and 4th use effect will show up in the network tab as undefined, but the first one works because we're using the studentID.  Then when the expandedobjects state changes from the initial array to to the api state, those useeffects run again.   this time they have the expanded object state so they are able to work correctly.  
-//a prop is a parameter/argument that you can pass to another component.  they can't me modified in the child that it's passed to.
-
-
 import React, { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { useHistory } from "react-router-dom"
@@ -14,7 +10,7 @@ export const EditStudentForm = () => {
     const history = useHistory()
 
 
-    const [studentCard, updateStudentCard] = useState({ //on render stores `http://localhost:8088/students/${parseInt(studentId)}; changes as state is changed in form
+    const [studentCard, updateStudentCard] = useState({ 
         name: "",
         mapMath: "",
         mapReading: "",
@@ -39,19 +35,22 @@ export const EditStudentForm = () => {
 
     /*~~~~~~~~~~~MATCHING PARENT OBJECTS USING THESE FINDS~~~~~~~~~~*/
 
-    /*~NOTE!  THESE RUN AFTER INITIAL RENDER WHICH IS WHY THEY SHOW UP AS UNDEFINED AT FIRST~~*/
-    const foundParentOne = expandedObjects.find(parent => parent.studentId === parseInt(studentId))
-
+//     /*~NOTE!  THESE RUN AFTER INITIAL RENDER WHICH IS WHY THEY SHOW UP AS UNDEFINED AT FIRST~~*/
+   const foundParentOne = expandedObjects.find(parent => parent.studentId === parseInt(studentId))
+// //2 not working!!!
     const foundParentTwo = expandedObjects.find(parent => parent.id !== foundParentOne.id ? parent.studentId === parseInt(studentId) : "")
 
+//making a more specific fetch below instead
 
 
+
+/*~~~~~~~FETCH EXISTING API INFO FOR STUDENT & PARENTS YOU CLICKED ON; STORE IN STATE VARIABLES AT TOP ~~~~~~~~~~*/
     /*~~~~FETCH PARENT OBJECTS EXPANDED W/ STUDENT DATA; STORE IN 'expandedObjects' STATE HOOK~~~~~~~~*/
 
     
     useEffect(
         () => {
-            return fetch(`http://localhost:8088/parents?_expand=student`)
+            return fetch(`http://localhost:8088/parents?_expand=student&studentId=${studentId}`)
                 .then(response => response.json())
                 .then((fetchedData) => {
                     storeExpandedObjects(fetchedData)
@@ -61,45 +60,9 @@ export const EditStudentForm = () => {
     )
 
 
-    /*~~~~~~~FETCH EXISTING API INFO FOR STUDENT & PARENTS YOU CLICKED ON; STORE IN STATE VARIABLES AT TOP ~~~~~~~~~~*/
 
     
-    useEffect(
-        () => {
-            return fetch(`http://localhost:8088/students/${parseInt(studentId)}`)
-                .then(response => response.json())
-                .then((fetchedData) => {
-                    updateStudentCard(fetchedData)
-                })
-        },
-        [studentId]
-    )
 
-    useEffect( 
-        () => {
-            if (foundParentOne !== undefined) { //stops the initial run that was undefined
-                return fetch(`http://localhost:8088/parents/${foundParentOne?.id}`)
-                    .then(response => response.json())
-                    .then((fetchedData) => {
-                        return updateParentOne(fetchedData) 
-                    })
-            }
-        },
-        [expandedObjects]
-    )
-
-    useEffect(
-        () => {
-            if (foundParentTwo !== undefined) { //stops the initial run that was undefined
-                return fetch(`http://localhost:8088/parents/${foundParentTwo?.id}`)
-                    .then(response => response.json())
-                    .then((fetchedData) => {
-                        return updateParentTwo(fetchedData) 
-                    })
-            }
-        },
-        [expandedObjects]
-    )
 
 
     /*~~~~~~~INVOKED IN FORM.  USER INPUT COPY STATE GETS STORED AT TOP WITH USESTATE HOOKS ~~~~~~~~~~*/
@@ -126,7 +89,7 @@ export const EditStudentForm = () => {
 
     const parentTwoPrimary = foundParentTwo?.primaryContact ? true : false
 
-
+//need to be state variables if used in jsx
 
     /*~~~~~~~ INVOKED AT SAVE CHANGES BUTTON ~~~~~~~~~~*/
     const SaveEditedCard = (event) => {
@@ -269,12 +232,13 @@ export const EditStudentForm = () => {
                         <label htmlFor="primary-contact">Primary Contact</label>
                         <input
                             onChange={
-                                (evt) => {
+                                (evt) => { 
+                                    debugger
                                     modifyParentOne("primaryContact", evt.target.checked)
                                 }
                             }
                             type="checkbox"
-                            checked={parentOnePrimary ? "checked" : ""}
+                            checked={parentOne.primaryContact}
                         />
                     </div>
                 </fieldset>
@@ -325,7 +289,7 @@ export const EditStudentForm = () => {
                                 }
                             }
                             type="checkbox"
-                            checked={parentTwoPrimary ? "checked" : ""} />
+                            checked={parentTwo.primaryContact} />
                     </div>
                 </fieldset>
 
