@@ -9,7 +9,7 @@ import { useHistory } from "react-router-dom"
 
 export const EditStudentForm = () => {
 
-    const [expandedObjects, storeExpandedObjects] = useState([]) 
+    const [expandedObjects, storeExpandedObjects] = useState([])
     const { studentId } = useParams() //studentId matches with the appview route path
     const history = useHistory()
 
@@ -39,19 +39,19 @@ export const EditStudentForm = () => {
 
     /*~~~~~~~~~~~MATCHING PARENT OBJECTS USING THESE FINDS~~~~~~~~~~*/
 
-        /*~NOTE!  THESE RUN AFTER INITIAL RENDER WHICH IS WHY THEY SHOW UP AS UNDEFINED AT FIRST~~*/
+    /*~NOTE!  THESE RUN AFTER INITIAL RENDER WHICH IS WHY THEY SHOW UP AS UNDEFINED AT FIRST~~*/
     const foundParentOne = expandedObjects.find(parent => parent.studentId === parseInt(studentId))
 
     const foundParentTwo = expandedObjects.find(parent => parent.id !== foundParentOne.id ? parent.studentId === parseInt(studentId) : "")
 
 
 
-    /*~~~~FETCH PARENT OBJECTS EXPANDED WITH STUDENT OBJECT DATA; STORE IN 'expandedObjects' STATE HOOK~~~~~~~~*/
+    /*~~~~FETCH PARENT OBJECTS EXPANDED W/ STUDENT DATA; STORE IN 'expandedObjects' STATE HOOK~~~~~~~~*/
 
-        /*~~~~NOTE! all happening on initial render.  then all watch for dep. array to change and running again.~~*/
+    
     useEffect(
         () => {
-            fetch(`http://localhost:8088/parents?_expand=student`)
+            return fetch(`http://localhost:8088/parents?_expand=student`)
                 .then(response => response.json())
                 .then((fetchedData) => {
                     storeExpandedObjects(fetchedData)
@@ -63,10 +63,10 @@ export const EditStudentForm = () => {
 
     /*~~~~~~~FETCH EXISTING API INFO FOR STUDENT & PARENTS YOU CLICKED ON; STORE IN STATE VARIABLES AT TOP ~~~~~~~~~~*/
 
-    //runs initially with only student found. expanded hasn't changed from empty[] yet so parents aren't available.  Runs again when expanded state changes and parents can be found.
+    
     useEffect(
         () => {
-            fetch(`http://localhost:8088/students/${parseInt(studentId)}`)
+            return fetch(`http://localhost:8088/students/${parseInt(studentId)}`)
                 .then(response => response.json())
                 .then((fetchedData) => {
                     updateStudentCard(fetchedData)
@@ -74,23 +74,29 @@ export const EditStudentForm = () => {
         },
         [studentId]
     )
-    useEffect(
+
+    useEffect( 
         () => {
-            fetch(`http://localhost:8088/parents/${foundParentOne?.id}`)  
-                .then(response => response.json())
-                .then((fetchedData) => {
-                    updateParentOne(fetchedData)
-                })
+            if (foundParentOne !== undefined) { //stops the initial run that was undefined
+                return fetch(`http://localhost:8088/parents/${foundParentOne?.id}`)
+                    .then(response => response.json())
+                    .then((fetchedData) => {
+                        return updateParentOne(fetchedData) 
+                    })
+            }
         },
         [expandedObjects]
     )
+
     useEffect(
         () => {
-            fetch(`http://localhost:8088/parents/${foundParentTwo?.id}`) 
-                .then(response => response.json())
-                .then((fetchedData) => {
-                    updateParentTwo(fetchedData)
-                })
+            if (foundParentTwo !== undefined) { //stops the initial run that was undefined
+                return fetch(`http://localhost:8088/parents/${foundParentTwo?.id}`)
+                    .then(response => response.json())
+                    .then((fetchedData) => {
+                        return updateParentTwo(fetchedData) 
+                    })
+            }
         },
         [expandedObjects]
     )
@@ -116,7 +122,7 @@ export const EditStudentForm = () => {
 
 
     /*~~~~~~~CALLED IN FORM AT CHECKBOX; SAVED BOOLEAN VALUE POPULATES [IF PRIMARY, BOX IS CHECKED] ~~~~~~~~~~*/
-    const parentOnePrimary = foundParentOne?.primaryContact ? true : false 
+    const parentOnePrimary = foundParentOne?.primaryContact ? true : false
 
     const parentTwoPrimary = foundParentTwo?.primaryContact ? true : false
 
@@ -181,10 +187,10 @@ export const EditStudentForm = () => {
 
 
         /*~~~~~~~POST UPDATED STUDENT, PARENT ONE, PARENT TWO STATE TO API; REROUTE TO ROSTER VIEW ~~~~~~~~~~*/
-       
-        return fetch(`http://localhost:8088/parents/${foundParentOne.id}`, fetchOptionParentOneCardData)  
+
+        return fetch(`http://localhost:8088/parents/${foundParentOne.id}`, fetchOptionParentOneCardData)
             .then(fetch(`http://localhost:8088/parents/${foundParentTwo.id}`, fetchOptionParentTwoCardData))
-            .then(fetch(`http://localhost:8088/students/${parseInt(studentId)}`, fetchOptionStudentCardData))   
+            .then(fetch(`http://localhost:8088/students/${parseInt(studentId)}`, fetchOptionStudentCardData))
             .then(() => { return history.push("/students") })
 
 
@@ -218,7 +224,7 @@ export const EditStudentForm = () => {
 
             <h3>Edit or delete your Conference Card</h3>
 
-            <form className="studentForm" onSubmit={(event) => {event.preventDefault()}}> 
+            <form className="studentForm" onSubmit={(event) => { event.preventDefault() }}>
 
                 <h2 className="form-group">Student Conference Card</h2>
 
@@ -456,9 +462,9 @@ export const EditStudentForm = () => {
                         onClick={
                             () => {
                                 DeleteParentTwo(foundParentTwo?.id)
-                                .then(() => { return DeleteParentOne(foundParentOne?.id) })
-                                .then(() => { return DeleteStudent(studentId) })
-                                .then(() => {  history.push("/students") })
+                                    .then(() => { return DeleteParentOne(foundParentOne?.id) })
+                                    .then(() => { return DeleteStudent(studentId) })
+                                    .then(() => { history.push("/students") })
                             }}>
                         🗑 Delete Student
                     </button>
