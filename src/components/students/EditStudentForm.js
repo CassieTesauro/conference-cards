@@ -5,20 +5,11 @@ import { useHistory } from "react-router-dom"
 
 export const EditStudentForm = () => {
 
-    const [expandedObjects, storeExpandedObjects] = useState([])
+    const [studentWithParents, storeStudentWithParents] = useState({}) //fetch has studentw/parents embedded 
     const { studentId } = useParams() //studentId matches with the appview route path
     const history = useHistory()
 
 
-    const [studentCard, updateStudentCard] = useState({ 
-        name: "",
-        mapMath: "",
-        mapReading: "",
-        tla: "",
-        rocketmath: "",
-        writing: "",
-        socialEmotional: ""
-    })
 
     const [parentOne, updateParentOne] = useState({
         parentName: "",
@@ -33,30 +24,29 @@ export const EditStudentForm = () => {
     })
 
 
-    /*~~~~~~~~~~~MATCHING PARENT OBJECTS USING THESE FINDS~~~~~~~~~~*/
+    /*~~~~~~~~~~~MATCHING PARENT OBJECTS USING THESE FINDS  <-- don't need; parents brought in by initial fetch~~~~~~~~~~*/
 
-//     /*~NOTE!  THESE RUN AFTER INITIAL RENDER WHICH IS WHY THEY SHOW UP AS UNDEFINED AT FIRST~~*/
-   const foundParentOne = expandedObjects.find(parent => parent.studentId === parseInt(studentId))
-// //2 not working!!!
-    const foundParentTwo = expandedObjects.find(parent => parent.id !== foundParentOne.id ? parent.studentId === parseInt(studentId) : "")
+
 
 //making a more specific fetch below instead
 
 
 
 /*~~~~~~~FETCH EXISTING API INFO FOR STUDENT & PARENTS YOU CLICKED ON; STORE IN STATE VARIABLES AT TOP ~~~~~~~~~~*/
-    /*~~~~FETCH PARENT OBJECTS EXPANDED W/ STUDENT DATA; STORE IN 'expandedObjects' STATE HOOK~~~~~~~~*/
+    /*~~~~FETCH STUDENT OBJECT EMBEDDEDD W/ MATCHED PARENT DATA; STORE IN 'studentsWithParents' STATE HOOK~~~~~~~~*/
 
     
     useEffect(
         () => {
-            return fetch(`http://localhost:8088/parents?_expand=student&studentId=${studentId}`)
+            return fetch(`http://localhost:8088/students/${studentId}?_embed=parents`)
                 .then(response => response.json())
                 .then((fetchedData) => {
-                    storeExpandedObjects(fetchedData)
+                    storeStudentWithParents(fetchedData)
+                    updateParentOne(fetchedData.parents[0]) //studentobject-->parentarray-->parentobject index 0
+                    updateParentTwo(fetchedData.parents[1])
                 })
         },
-        [studentId]
+        [] //NOT NEEDED; ONLY FIRES ONCE AFTER INITIAL JSX RENDER
     )
 
 
@@ -67,9 +57,9 @@ export const EditStudentForm = () => {
 
     /*~~~~~~~INVOKED IN FORM.  USER INPUT COPY STATE GETS STORED AT TOP WITH USESTATE HOOKS ~~~~~~~~~~*/
     const modifyStudentCard = (propertyToModify, newValue) => {
-        const studentCardCopy = { ...studentCard }
+        const studentCardCopy = { ...studentWithParents }
         studentCardCopy[propertyToModify] = newValue
-        updateStudentCard(studentCardCopy)
+        storeStudentWithParents(studentCardCopy)
     }
     const modifyParentOne = (propertyToModify, newValue) => {
         const parentOneCopy = { ...parentOne }
@@ -85,9 +75,9 @@ export const EditStudentForm = () => {
 
 
     /*~~~~~~~CALLED IN FORM AT CHECKBOX; SAVED BOOLEAN VALUE POPULATES [IF PRIMARY, BOX IS CHECKED] ~~~~~~~~~~*/
-    const parentOnePrimary = foundParentOne?.primaryContact ? true : false
+    const parentOnePrimary = parentOne?.primaryContact ? true : false
 
-    const parentTwoPrimary = foundParentTwo?.primaryContact ? true : false
+    const parentTwoPrimary = parentTwo?.primaryContact ? true : false
 
 //need to be state variables if used in jsx
 
@@ -97,14 +87,14 @@ export const EditStudentForm = () => {
 
         /*~~~~~~~CREATE STUDENT OBJECT TO REPLACE CURRENT API OBJECT FOR THAT STUDENT~~~~~~~~~~*/
         const newStudentCardData = {
-            name: studentCard.name,
+            name: studentWithParents.name,
             teacherId: parseInt(localStorage.getItem("cc_teacher")),
-            mapMath: studentCard.mapMath,
-            mapReading: studentCard.mapReading,
-            tla: studentCard.tla,
-            rocketmath: studentCard.rocketmath,
-            writing: studentCard.writing,
-            socialEmotional: studentCard.socialEmotional
+            mapMath: studentWithParents.mapMath,
+            mapReading: studentWithParents.mapReading,
+            tla: studentWithParents.tla,
+            rocketmath: studentWithParents.rocketmath,
+            writing: studentWithParents.writing,
+            socialEmotional: studentWithParents.socialEmotional
         }
 
         const fetchOptionStudentCardData = {
@@ -151,9 +141,9 @@ export const EditStudentForm = () => {
 
         /*~~~~~~~POST UPDATED STUDENT, PARENT ONE, PARENT TWO STATE TO API; REROUTE TO ROSTER VIEW ~~~~~~~~~~*/
 
-        return fetch(`http://localhost:8088/parents/${foundParentOne.id}`, fetchOptionParentOneCardData)
-            .then(fetch(`http://localhost:8088/parents/${foundParentTwo.id}`, fetchOptionParentTwoCardData))
-            .then(fetch(`http://localhost:8088/students/${parseInt(studentId)}`, fetchOptionStudentCardData))
+        return fetch(`http://localhost:8088/parents/${parentOne.id}`, fetchOptionParentOneCardData)
+            .then(fetch(`http://localhost:8088/parents/${parentTwo.id}`, fetchOptionParentTwoCardData))
+            .then(fetch(`http://localhost:8088/students/${studentId}`, fetchOptionStudentCardData)) //don't need parseint, it will still be a string
             .then(() => { return history.push("/students") })
 
 
@@ -164,17 +154,17 @@ export const EditStudentForm = () => {
     /*~~~~~~~INVOKED IN DELETE BUTTON~~~~~~~~~~*/ //REMEMBER- needs parameter   //ALWAYS RETURN OR FETCH WILL BE UNDEFINED!!!
 
     const DeleteParentTwo = (parentTwo) => {
-        return fetch(`http://localhost:8088/parents/${parseInt(parentTwo)}`, {
+        return fetch(`http://localhost:8088/parents/${parentTwo}`, {
             method: "DELETE"
         })
     }
     const DeleteParentOne = (parentOne) => {
-        return fetch(`http://localhost:8088/parents/${parseInt(parentOne)}`, {
+        return fetch(`http://localhost:8088/parents/${parentOne}`, {
             method: "DELETE"
         })
     }
     const DeleteStudent = (student) => {
-        return fetch(`http://localhost:8088/students/${parseInt(student)}`, {
+        return fetch(`http://localhost:8088/students/${student}`, {
             method: "DELETE"
         })
     }
@@ -203,7 +193,7 @@ export const EditStudentForm = () => {
                             required autoFocus
                             type="text" id="student-name"
                             className="form-control"
-                            value={studentCard.name}  // ? = optional chaining; if that first property doesn't exist on first render, don't worry and move on
+                            value={studentWithParents.name}  // ? = optional chaining; if that first property doesn't exist on first render, don't worry and move on
                         />
                     </div>
                 </fieldset>
@@ -222,7 +212,7 @@ export const EditStudentForm = () => {
                             required autoFocus
                             type="text" id="guardian-one-name"
                             className="form-control"
-                            value={parentOne.parentName} />
+                            value={parentOne?.parentName} />
                     </div>
                 </fieldset>
 
@@ -233,12 +223,11 @@ export const EditStudentForm = () => {
                         <input
                             onChange={
                                 (evt) => { 
-                                    debugger
                                     modifyParentOne("primaryContact", evt.target.checked)
                                 }
                             }
                             type="checkbox"
-                            checked={parentOne.primaryContact}
+                            checked={parentOne?.primaryContact}
                         />
                     </div>
                 </fieldset>
@@ -256,7 +245,7 @@ export const EditStudentForm = () => {
                             required autoFocus
                             type="text" id="guardian-one-phone"
                             className="form-control"
-                            value={parentOne.parentPhone} />
+                            value={parentOne?.parentPhone} />
                     </div>
                 </fieldset>
 
@@ -274,7 +263,7 @@ export const EditStudentForm = () => {
                             required autoFocus
                             type="text" id="guardian-two-name"
                             className="form-control"
-                            value={parentTwo.parentName} />
+                            value={parentTwo?.parentName} />
                     </div>
                 </fieldset>
 
@@ -289,7 +278,7 @@ export const EditStudentForm = () => {
                                 }
                             }
                             type="checkbox"
-                            checked={parentTwo.primaryContact} />
+                            checked={parentTwo?.primaryContact} />
                     </div>
                 </fieldset>
 
@@ -306,7 +295,7 @@ export const EditStudentForm = () => {
                             required autoFocus
                             type="text" id="guardian-two-phone"
                             className="form-control"
-                            value={parentTwo.parentPhone} />
+                            value={parentTwo?.parentPhone} />
                     </div>
                 </fieldset>
 
@@ -323,7 +312,7 @@ export const EditStudentForm = () => {
                             required autoFocus
                             type="text" id="map-math-rit"
                             className="form-control"
-                            value={studentCard.mapMath} />
+                            value={studentWithParents.mapMath} />
                     </div>
                 </fieldset>
 
@@ -340,7 +329,7 @@ export const EditStudentForm = () => {
                             required autoFocus
                             type="text" id="map-reading-rit"
                             className="form-control"
-                            value={studentCard.mapReading} />
+                            value={studentWithParents.mapReading} />
                     </div>
                 </fieldset>
 
@@ -357,7 +346,7 @@ export const EditStudentForm = () => {
                             required autoFocus
                             type="text" id="tla"
                             className="form-control"
-                            value={studentCard.tla} />
+                            value={studentWithParents.tla} />
                     </div>
                 </fieldset>
 
@@ -374,7 +363,7 @@ export const EditStudentForm = () => {
                             required autoFocus
                             type="text" id="rocket-math"
                             className="form-control"
-                            value={studentCard.rocketmath} />
+                            value={studentWithParents.rocketmath} />
                     </div>
                 </fieldset>
 
@@ -391,7 +380,7 @@ export const EditStudentForm = () => {
                             required autoFocus
                             type="text" id="writing"
                             className="form-control"
-                            value={studentCard.writing} />
+                            value={studentWithParents.writing} />
                     </div>
                 </fieldset>
 
@@ -408,7 +397,7 @@ export const EditStudentForm = () => {
                             required autoFocus
                             type="text" id="soc-emo"
                             className="form-control"
-                            value={studentCard.socialEmotional} />  {/*reflects the state at the top that we're manipulating */}
+                            value={studentWithParents.socialEmotional} />  {/*reflects the state at the top that we're manipulating */}
                     </div>
                 </fieldset>
 
@@ -425,8 +414,8 @@ export const EditStudentForm = () => {
                     <button className="btn btn-primary"
                         onClick={
                             () => {
-                                DeleteParentTwo(foundParentTwo?.id)
-                                    .then(() => { return DeleteParentOne(foundParentOne?.id) })
+                                DeleteParentTwo(parentTwo?.id)
+                                    .then(() => { return DeleteParentOne(parentOne?.id) })
                                     .then(() => { return DeleteStudent(studentId) })
                                     .then(() => { history.push("/students") })
                             }}>

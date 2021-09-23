@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect} from "react"
+import React, { useState, useEffect } from "react"
 import { useHistory } from "react-router-dom"
 
 
@@ -27,27 +27,14 @@ export const StudentForm = () => {
         parentPhone: ""
     })
 
-    const [allStudents, setAllStudents] = useState([])
-
+//WILL GET THE UPDATED STUDENT STATE WHEN PATH CHANGES TO ROSTER
     const history = useHistory()
-    
-    
-    /*~~~~~~~INVOKED IN CHAINED .THEN SECTION ~~~~~~~~~~*/
-    const fetchStudentArray = () => {
-        return fetch("http://localhost:8088/students") 
-        .then(response => response.json())
-        .then((data) => setAllStudents(data))
-    }
-    
-    useEffect( 
-        () => {
-            fetchStudentArray()
-        },
-        []
-    )
-   
 
-    /*~~~~~~~INVOKED IN FORM.  USER INPUT COPY GETS STORED ABOVE WITH USESTATE HOOKS ~~~~~~~~~~*/  
+
+    
+
+
+    /*~~~~~~~INVOKED IN FORM.  USER INPUT COPY GETS STORED ABOVE WITH USESTATE HOOKS ~~~~~~~~~~*/
     const modifyStudentCard = (propertyToModify, newValue) => {
         const studentCardCopy = { ...studentCard }
         studentCardCopy[propertyToModify] = newValue
@@ -70,8 +57,8 @@ export const StudentForm = () => {
     /*~~~~~~~ INVOKED AT SAVE BUTTON ~~~~~~~~~~*/
     const SaveConferenceCard = (event) => {
         event.preventDefault()
-        
-debugger
+
+
 
         /*~~~~~~~CREATE NEW STUDENT OBJECT AND FETCH OPTIONS ~~~~~~~~~~*/
         const newStudentCardData = {
@@ -93,313 +80,321 @@ debugger
             body: JSON.stringify(newStudentCardData)
         }
 
-        /*~~~~~~~CREATE STUDENT ID FOREIGN KEY FOR PARENT OBJECTS ~~~~~~~~~~*/
-        
-        const lastIndex = allStudents.length
-        const newStudentId = lastIndex + 1
 
 
-            /*~~~~~~~CREATE NEW PARENT ONE AND TWO OBJECTS AND FETCH OPTIONS ~~~~~~~~~~*/
-            const newParentOneCardData = {
-                studentId: newStudentId,
-                parentName: parentOne.parentName,
-                primaryContact: parentOne.primaryContact,
-                parentPhone: parentOne.parentPhone
-            }
-            
-            
-            const fetchOptionParentOneCardData = {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(newParentOneCardData)
-            }
-            
-            const newParentTwoCardData = {
-                studentId: newStudentId,
-                parentName: parentTwo.parentName,
-                primaryContact: parentTwo.primaryContact,
-                parentPhone: parentTwo.parentPhone
-            }
-            
-            const fetchOptionParentTwoCardData = {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(newParentTwoCardData)
-        }
 
-        
+        /*~~~~~~~CREATE NEW PARENT ONE AND TWO OBJECTS AND FETCH OPTIONS ~~~~~~~~~~*/
+
+
+
+
+
         /*~~~~~~~POST STUDENT, PARENT ONE, PARENT TWO STATE TO API; REROUTE TO ROSTER VIEW ~~~~~~~~~~*/
-        
-        
+
+
         return fetch("http://localhost:8088/students", fetchOptionStudentCardData)          //post new student object
-        .then(fetchStudentArray)      //NO PARENTHESES!                                //get updated student state; store as allStudents
-        .then(fetch("http://localhost:8088/parents", fetchOptionParentOneCardData))    //post parent 1 object
-        .then(fetch("http://localhost:8088/parents", fetchOptionParentTwoCardData))    //post parent 2 object
-        .then(() => {history.push("/students")})                                //back to roster view
-        
-        //took off return from above history
+            .then(response => response.json())
+            .then(newStudentData => {
+                //add two new parents to parent array that match this student
+
+                //create first parent dependent on first fetch for student id
+                const newParentOneCardData = {
+                    studentId: newStudentData.id,
+                    parentName: parentOne.parentName,
+                    primaryContact: parentOne.primaryContact,
+                    parentPhone: parentOne.parentPhone
+                }
+                const fetchOptionParentOneCardData = {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(newParentOneCardData)
+                }
+                fetch("http://localhost:8088/parents", fetchOptionParentOneCardData)
+
+                //create second parent; dependent on first fetch but not 1st parent bc needs id from new student obj
+                const newParentTwoCardData = {
+                    studentId: newStudentData.id,
+                    parentName: parentTwo.parentName,
+                    primaryContact: parentTwo.primaryContact,
+                    parentPhone: parentTwo.parentPhone
+                }
+
+                const fetchOptionParentTwoCardData = {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(newParentTwoCardData)
+                }
+                fetch("http://localhost:8088/parents", fetchOptionParentTwoCardData)   //post parent 2 object
+
+
+            })
+
+            .then(() => { history.push("/students") })                                //back to roster view
+
+
+       
     } //end SaveConferenceCard()
-    
-     /*~~~~~~~INVOKED AT CANCEL BUTTON ~~~~~~~~~~*/
+
+    /*~~~~~~~INVOKED AT CANCEL BUTTON ~~~~~~~~~~*/
     const CancelConferenceCard = (event) => {
         event.preventDefault()
         history.push("/students")  //took off return
     }
 
-     /*~~~~~~~FORM STARTS HERE ~~~~~~~~~~*/
+    /*~~~~~~~FORM STARTS HERE ~~~~~~~~~~*/
 
-        return (
-            <>
-                <form className="studentForm">
+    return (
+        <>
+            <form className="studentForm">
 
-                    <h2 className="form-group">Student Conference Card</h2>
+                <h2 className="form-group">Student Conference Card</h2>
 
-                    <fieldset>
-                        <div className="form-group">
-                            <label htmlFor="student-name">Name:</label>
-                            <input
-                                onChange={
-                                    (evt) => {
-                                        modifyStudentCard("name", evt.target.value)  
-                                    }
+                <fieldset>
+                    <div className="form-group">
+                        <label htmlFor="student-name">Name:</label>
+                        <input
+                            onChange={
+                                (evt) => {
+                                    modifyStudentCard("name", evt.target.value)
                                 }
-                                required autoFocus
-                                type="text" id="student-name"
-                                className="form-control"
-                                placeholder="First Last"
-                            />
-                        </div>
-                    </fieldset>
+                            }
+                            required autoFocus
+                            type="text" id="student-name"
+                            className="form-control"
+                            placeholder="First Last"
+                        />
+                    </div>
+                </fieldset>
 
 
-                    {/*~~~~~~~FORM PARENT ONE INFO ~~~~~~~~~~*/}
-                    <fieldset>
-                        <div className="form-group">
-                            <label htmlFor="guardian-one-name">Guardian 1 Name:</label>
-                            <input
-                                onChange={
-                                    (evt) => {
-                                        modifyParentOne("parentName", evt.target.value)
-                                    }
+                {/*~~~~~~~FORM PARENT ONE INFO ~~~~~~~~~~*/}
+                <fieldset>
+                    <div className="form-group">
+                        <label htmlFor="guardian-one-name">Guardian 1 Name:</label>
+                        <input
+                            onChange={
+                                (evt) => {
+                                    modifyParentOne("parentName", evt.target.value)
                                 }
-                                required autoFocus
-                                type="text" id="guardian-one-name"
-                                className="form-control"
-                                placeholder="First Last"
-                            />
-                        </div>
-                    </fieldset>
+                            }
+                            required autoFocus
+                            type="text" id="guardian-one-name"
+                            className="form-control"
+                            placeholder="First Last"
+                        />
+                    </div>
+                </fieldset>
 
 
-                    <fieldset>
-                        <div className="form-group">
-                            <label htmlFor="primary-contact">Primary Contact</label>
-                            <input
-                                onChange={
-                                    (evt) => {
-                                        modifyParentOne("primaryContact", evt.target.checked)
-                                    }
+                <fieldset>
+                    <div className="form-group">
+                        <label htmlFor="primary-contact">Primary Contact</label>
+                        <input
+                            onChange={
+                                (evt) => {
+                                    modifyParentOne("primaryContact", evt.target.checked)
                                 }
-                                type="checkbox" />
-                        </div>
-                    </fieldset>
+                            }
+                            type="checkbox" />
+                    </div>
+                </fieldset>
 
 
-                    <fieldset>
-                        <div className="form-group">
-                            <label htmlFor="guardian-one-phone">Guardian 1 Phone:</label>
-                            <input
-                                onChange={
-                                    (evt) => {
-                                        modifyParentOne("parentPhone", evt.target.value)
-                                    }
+                <fieldset>
+                    <div className="form-group">
+                        <label htmlFor="guardian-one-phone">Guardian 1 Phone:</label>
+                        <input
+                            onChange={
+                                (evt) => {
+                                    modifyParentOne("parentPhone", evt.target.value)
                                 }
-                                required autoFocus
-                                type="text" id="guardian-one-phone"
-                                className="form-control"
-                                placeholder="xxx-xxx-xxxx"
-                            />
-                        </div>
-                    </fieldset>
+                            }
+                            required autoFocus
+                            type="text" id="guardian-one-phone"
+                            className="form-control"
+                            placeholder="xxx-xxx-xxxx"
+                        />
+                    </div>
+                </fieldset>
 
 
-                    {/*~~~~~~~FORM PARENT TWO INFO ~~~~~~~~~~*/}
-                    <fieldset>
-                        <div className="form-group">
-                            <label htmlFor="guardian-two-name">Guardian 2 Name:</label>
-                            <input
-                                onChange={
-                                    (evt) => {
-                                        modifyParentTwo("parentName", evt.target.value)
-                                    }
+                {/*~~~~~~~FORM PARENT TWO INFO ~~~~~~~~~~*/}
+                <fieldset>
+                    <div className="form-group">
+                        <label htmlFor="guardian-two-name">Guardian 2 Name:</label>
+                        <input
+                            onChange={
+                                (evt) => {
+                                    modifyParentTwo("parentName", evt.target.value)
                                 }
-                                required autoFocus
-                                type="text" id="guardian-two-name"
-                                className="form-control"
-                                placeholder="First Last"
-                            />
-                        </div>
-                    </fieldset>
+                            }
+                            required autoFocus
+                            type="text" id="guardian-two-name"
+                            className="form-control"
+                            placeholder="First Last"
+                        />
+                    </div>
+                </fieldset>
 
 
-                    <fieldset>
-                        <div className="form-group">
-                            <label htmlFor="primary-contact">Primary Contact</label>
-                            <input
-                                onChange={
-                                    (evt) => {
-                                        modifyParentTwo("primaryContact", evt.target.checked)
-                                    }
+                <fieldset>
+                    <div className="form-group">
+                        <label htmlFor="primary-contact">Primary Contact</label>
+                        <input
+                            onChange={
+                                (evt) => {
+                                    modifyParentTwo("primaryContact", evt.target.checked)
                                 }
-                                type="checkbox" />
-                        </div>
-                    </fieldset>
+                            }
+                            type="checkbox" />
+                    </div>
+                </fieldset>
 
 
-                    <fieldset>
-                        <div className="form-group">
-                            <label htmlFor="guardian-two-phone">Guardian 2 Phone:</label>
-                            <input
-                                onChange={
-                                    (evt) => {
-                                        modifyParentTwo("parentPhone", evt.target.value)
-                                    }
+                <fieldset>
+                    <div className="form-group">
+                        <label htmlFor="guardian-two-phone">Guardian 2 Phone:</label>
+                        <input
+                            onChange={
+                                (evt) => {
+                                    modifyParentTwo("parentPhone", evt.target.value)
                                 }
-                                required autoFocus
-                                type="text" id="guardian-two-phone"
-                                className="form-control"
-                                placeholder="xxx-xxx-xxxx"
-                            />
-                        </div>
-                    </fieldset>
+                            }
+                            required autoFocus
+                            type="text" id="guardian-two-phone"
+                            className="form-control"
+                            placeholder="xxx-xxx-xxxx"
+                        />
+                    </div>
+                </fieldset>
 
-                    {/*~~~~~~~STUDENT ACADEMIC INFO ~~~~~~~~~~*/}
-                    <fieldset>
-                        <div className="form-group">
-                            <label htmlFor="map-math-rit">MAP Math RIT:</label>
-                            <input
-                                onChange={
-                                    (evt) => {
-                                        modifyStudentCard("mapMath", evt.target.value)
-                                    }
+                {/*~~~~~~~STUDENT ACADEMIC INFO ~~~~~~~~~~*/}
+                <fieldset>
+                    <div className="form-group">
+                        <label htmlFor="map-math-rit">MAP Math RIT:</label>
+                        <input
+                            onChange={
+                                (evt) => {
+                                    modifyStudentCard("mapMath", evt.target.value)
                                 }
-                                required autoFocus
-                                type="text" id="map-math-rit"
-                                className="form-control"
-                                placeholder="score"
-                            />
-                        </div>
-                    </fieldset>
+                            }
+                            required autoFocus
+                            type="text" id="map-math-rit"
+                            className="form-control"
+                            placeholder="score"
+                        />
+                    </div>
+                </fieldset>
 
 
-                    <fieldset>
-                        <div className="form-group">
-                            <label htmlFor="map-reading-rit">MAP Reading RIT:</label>
-                            <input
-                                onChange={
-                                    (evt) => {
-                                        modifyStudentCard("mapReading", evt.target.value)
-                                    }
+                <fieldset>
+                    <div className="form-group">
+                        <label htmlFor="map-reading-rit">MAP Reading RIT:</label>
+                        <input
+                            onChange={
+                                (evt) => {
+                                    modifyStudentCard("mapReading", evt.target.value)
                                 }
-                                required autoFocus
-                                type="text" id="map-reading-rit"
-                                className="form-control"
-                                placeholder="score"
-                            />
-                        </div>
-                    </fieldset>
+                            }
+                            required autoFocus
+                            type="text" id="map-reading-rit"
+                            className="form-control"
+                            placeholder="score"
+                        />
+                    </div>
+                </fieldset>
 
 
-                    <fieldset>
-                        <div className="form-group">
-                            <label htmlFor="tla">TLA Level:</label>
-                            <input
-                                onChange={
-                                    (evt) => {
-                                        modifyStudentCard("tla", evt.target.value)
-                                    }
+                <fieldset>
+                    <div className="form-group">
+                        <label htmlFor="tla">TLA Level:</label>
+                        <input
+                            onChange={
+                                (evt) => {
+                                    modifyStudentCard("tla", evt.target.value)
                                 }
-                                required autoFocus
-                                type="text" id="tla"
-                                className="form-control"
-                                placeholder="A"
-                            />
-                        </div>
-                    </fieldset>
+                            }
+                            required autoFocus
+                            type="text" id="tla"
+                            className="form-control"
+                            placeholder="A"
+                        />
+                    </div>
+                </fieldset>
 
 
-                    <fieldset>
-                        <div className="form-group">
-                            <label htmlFor="rocket-math">Rocket Math Level:</label>
-                            <input
-                                onChange={
-                                    (evt) => {
-                                        modifyStudentCard("rocketmath", evt.target.value)
-                                    }
+                <fieldset>
+                    <div className="form-group">
+                        <label htmlFor="rocket-math">Rocket Math Level:</label>
+                        <input
+                            onChange={
+                                (evt) => {
+                                    modifyStudentCard("rocketmath", evt.target.value)
                                 }
-                                required autoFocus
-                                type="text" id="rocket-math"
-                                className="form-control"
-                                placeholder="A"
-                            />
-                        </div>
-                    </fieldset>
+                            }
+                            required autoFocus
+                            type="text" id="rocket-math"
+                            className="form-control"
+                            placeholder="A"
+                        />
+                    </div>
+                </fieldset>
 
 
-                    <fieldset>
-                        <div className="form-group">
-                            <label htmlFor="writing">Writing:</label>
-                            <input
-                                onChange={
-                                    (evt) => {
-                                        modifyStudentCard("writing", evt.target.value)
-                                    }
+                <fieldset>
+                    <div className="form-group">
+                        <label htmlFor="writing">Writing:</label>
+                        <input
+                            onChange={
+                                (evt) => {
+                                    modifyStudentCard("writing", evt.target.value)
                                 }
-                                required autoFocus
-                                type="text" id="writing"
-                                className="form-control"
-                                placeholder="Teacher notes here"
-                            />
-                        </div>
-                    </fieldset>
+                            }
+                            required autoFocus
+                            type="text" id="writing"
+                            className="form-control"
+                            placeholder="Teacher notes here"
+                        />
+                    </div>
+                </fieldset>
 
 
-                    <fieldset>
-                        <div className="form-group">
-                            <label htmlFor="soc-emo">Social-Emotional:</label>
-                            <input
-                                onChange={
-                                    (evt) => {
-                                        modifyStudentCard("socialEmotional", evt.target.value)
-                                    }
+                <fieldset>
+                    <div className="form-group">
+                        <label htmlFor="soc-emo">Social-Emotional:</label>
+                        <input
+                            onChange={
+                                (evt) => {
+                                    modifyStudentCard("socialEmotional", evt.target.value)
                                 }
-                                required autoFocus
-                                type="text" id="soc-emo"
-                                className="form-control"
-                                placeholder="Teacher notes here"
-                            />
-                        </div>
-                    </fieldset>
+                            }
+                            required autoFocus
+                            type="text" id="soc-emo"
+                            className="form-control"
+                            placeholder="Teacher notes here"
+                        />
+                    </div>
+                </fieldset>
 
 
-                    <fieldset>
+                <fieldset>
 
-                        {/*~~~~~~~FORM BUTTONS ~~~~~~~~~~*/}
-                        <button className="btn btn-primary" onClick={SaveConferenceCard}>  
-                            Save
-                        </button>
+                    {/*~~~~~~~FORM BUTTONS ~~~~~~~~~~*/}
+                    <button className="btn btn-primary" onClick={SaveConferenceCard}>
+                        Save
+                    </button>
 
-                        <button className="btn btn-primary" onClick={CancelConferenceCard}>
-                            Cancel
-                        </button>
-                    </fieldset>
-                </form>
-            </>
+                    <button className="btn btn-primary" onClick={CancelConferenceCard}>
+                        Cancel
+                    </button>
+                </fieldset>
+            </form>
+        </>
 
-        )//end return with jsx form
-    
+    )//end return with jsx form
+
 }//end StudentForm()
