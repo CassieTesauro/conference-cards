@@ -5,7 +5,7 @@ import { useHistory } from "react-router-dom"
 
 export const EditStudentForm = () => {
 
-    const [studentWithParents, storeStudentWithParents] = useState({}) //fetch has studentw/parents embedded 
+    const [studentWithParents, storeStudentWithParents] = useState({}) //fetch has obj with student. parents embedded as an array o 2 obj in main object
     const { studentId } = useParams() //studentId matches with the appview route path
     const history = useHistory()
 
@@ -24,18 +24,10 @@ export const EditStudentForm = () => {
     })
 
 
-    /*~~~~~~~~~~~MATCHING PARENT OBJECTS USING THESE FINDS  <-- don't need; parents brought in by initial fetch~~~~~~~~~~*/
 
-
-
-//making a more specific fetch below instead
-
-
-
-/*~~~~~~~FETCH EXISTING API INFO FOR STUDENT & PARENTS YOU CLICKED ON; STORE IN STATE VARIABLES AT TOP ~~~~~~~~~~*/
-    /*~~~~FETCH STUDENT OBJECT EMBEDDEDD W/ MATCHED PARENT DATA; STORE IN 'studentsWithParents' STATE HOOK~~~~~~~~*/
-
+/*~~~~~~~FETCH EXISTING API INFO FOR STUDENT & PARENTS CLICKED ON IN ROSTER; STORE IN STATE VARIABLES AT TOP ~~~~~~~~~~*/
     
+    //Fetch the studentId from the useParams hook to fetch the correct student (w/parents embedded) from permanent state.  Store state locally in state variables
     useEffect(
         () => {
             return fetch(`http://localhost:8088/students/${studentId}?_embed=parents`)
@@ -46,7 +38,7 @@ export const EditStudentForm = () => {
                     updateParentTwo(fetchedData.parents[1])
                 })
         },
-        [] //NOT NEEDED; ONLY FIRES ONCE AFTER INITIAL JSX RENDER
+        [] //empty bc the useEffect only fires once after initial jsx render
     )
 
 
@@ -78,14 +70,14 @@ export const EditStudentForm = () => {
     const parentOnePrimary = parentOne?.primaryContact ? true : false
 
     const parentTwoPrimary = parentTwo?.primaryContact ? true : false
+                            //^^^^^^^need to be state variables if used in jsx
 
-//need to be state variables if used in jsx
 
     /*~~~~~~~ INVOKED AT SAVE CHANGES BUTTON ~~~~~~~~~~*/
     const SaveEditedCard = (event) => {
         event.preventDefault()
 
-        /*~~~~~~~CREATE STUDENT OBJECT TO REPLACE CURRENT API OBJECT FOR THAT STUDENT~~~~~~~~~~*/
+        /*~~~~~~~CREATE STUDENT OBJECT TO REPLACE CURRENT API OBJECT FOR THAT STUDENT.~~~~~~~~~~*/
         const newStudentCardData = {
             name: studentWithParents.name,
             teacherId: parseInt(localStorage.getItem("cc_teacher")),
@@ -113,7 +105,6 @@ export const EditStudentForm = () => {
             primaryContact: parentOne.primaryContact,
             parentPhone: parentOne.parentPhone
         }
-
 
         const fetchOptionParentOneCardData = {
             method: "PATCH", //patch instead of put BC if patch doesn't find an id, it doesn't execute and alter the api like put   
@@ -193,7 +184,7 @@ export const EditStudentForm = () => {
                             required autoFocus
                             type="text" id="student-name"
                             className="form-control"
-                            value={studentWithParents.name}  // ? = optional chaining; if that first property doesn't exist on first render, don't worry and move on
+                            value={studentWithParents.name}  
                         />
                     </div>
                 </fieldset>
@@ -212,7 +203,7 @@ export const EditStudentForm = () => {
                             required autoFocus
                             type="text" id="guardian-one-name"
                             className="form-control"
-                            value={parentOne?.parentName} />
+                            value={parentOne?.parentName} />  
                     </div>
                 </fieldset>
 
