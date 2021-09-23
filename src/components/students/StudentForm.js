@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom"
 
 
 export const StudentForm = () => {
-
+//STATE VARIABLES
     const [studentCard, updateStudentCard] = useState({
         name: "",
         mapMath: "",
@@ -59,7 +59,6 @@ export const StudentForm = () => {
         event.preventDefault()
 
 
-
         /*~~~~~~~CREATE NEW STUDENT OBJECT AND FETCH OPTIONS ~~~~~~~~~~*/
         const newStudentCardData = {
             name: studentCard.name,
@@ -81,23 +80,17 @@ export const StudentForm = () => {
         }
 
 
+        /*~~~~~~~POST NEW STUDENT; THEN CREATE THE DEPENDENT P1 AND P2 OBJECTS; THEN TAKE USER TO ROSTER~~~~~~~~~~*/
 
 
-        /*~~~~~~~CREATE NEW PARENT ONE AND TWO OBJECTS AND FETCH OPTIONS ~~~~~~~~~~*/
-
-
-
-
-
-        /*~~~~~~~POST STUDENT, PARENT ONE, PARENT TWO STATE TO API; REROUTE TO ROSTER VIEW ~~~~~~~~~~*/
-
-
-        return fetch("http://localhost:8088/students", fetchOptionStudentCardData)          //post new student object
+        return fetch("http://localhost:8088/students", fetchOptionStudentCardData)  //post student object        
             .then(response => response.json())
-            .then(newStudentData => {
-                //add two new parents to parent array that match this student
+            .then(newStudentData => {  //use the new student object's PK in the creation of P1/P2 objects
+               
+                //add two new parents to parent array that match this student.  
+                //P1/P2 care created at the same time because they are dependent on the student object, but not each other
 
-                //create first parent dependent on first fetch for student id
+                //create first parent.  P1 is dependent on the first fetch (student obj) because it needs the student id
                 const newParentOneCardData = {
                     studentId: newStudentData.id,
                     parentName: parentOne.parentName,
@@ -113,7 +106,8 @@ export const StudentForm = () => {
                 }
                 fetch("http://localhost:8088/parents", fetchOptionParentOneCardData)
 
-                //create second parent; dependent on first fetch but not 1st parent bc needs id from new student obj
+
+                //create second parent.  P2 is dependent on first fetch (student obj) because it needs id from new student obj
                 const newParentTwoCardData = {
                     studentId: newStudentData.id,
                     parentName: parentTwo.parentName,
@@ -128,22 +122,21 @@ export const StudentForm = () => {
                     },
                     body: JSON.stringify(newParentTwoCardData)
                 }
-                fetch("http://localhost:8088/parents", fetchOptionParentTwoCardData)   //post parent 2 object
-
+                fetch("http://localhost:8088/parents", fetchOptionParentTwoCardData)   
 
             })
+            //After the 3 objects are posted, user is sent to roster.  Since roster useEffect fetches from the API, the 3 new obj will be included.
+            .then(() => { history.push("/students") })                                
 
-            .then(() => { history.push("/students") })                                //back to roster view
-
-
-       
     } //end SaveConferenceCard()
+
 
     /*~~~~~~~INVOKED AT CANCEL BUTTON ~~~~~~~~~~*/
     const CancelConferenceCard = (event) => {
         event.preventDefault()
-        history.push("/students")  //took off return
+        history.push("/students")  
     }
+
 
     /*~~~~~~~FORM STARTS HERE ~~~~~~~~~~*/
 
@@ -159,7 +152,7 @@ export const StudentForm = () => {
                         <input
                             onChange={
                                 (evt) => {
-                                    modifyStudentCard("name", evt.target.value)
+                                    modifyStudentCard("name", evt.target.value) 
                                 }
                             }
                             required autoFocus

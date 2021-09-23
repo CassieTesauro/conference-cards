@@ -27,6 +27,5 @@ export const ApplicationViews = () => {
 }
 
 
-//note:  this route will make hyperlink lead to empty student form with url changed to student id at end   <Route path="/students/:studentId(\d+)">  
-                   // <StudentForm />
-                 // </Route>
+//note:  last route will make hyperlink lead to empty student form with url changed to student id at end   <Route path="/students/:studentId(\d+)">  
+                 
