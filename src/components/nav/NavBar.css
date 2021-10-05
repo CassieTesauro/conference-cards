@@ -1,10 +1,50 @@
 .navbar {
     display: flex;
     flex-wrap: nowrap;
-    justify-content: left;
+    justify-content: space-around;
+    font-size: 20px;
+    font-weight: bold;
 }
 
 .navbar__item {
-    flex-basis: 20%;
+    flex-basis: 25%;
     list-style-type: none;
 }
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #478df2
+    ;
+  }
+  
+  li {
+    float: right;
+  }
+  
+  li a {
+    display: block;
+    color: black;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+  }
+  
+  /* Change the link color to #111 (black) on hover */
+  .one a:hover{
+    background-color: #a0bfeb;
+    font-weight: bolder;
+  }
+  .two a:hover {
+    background-color: #fdca00;
+    font-weight: bolder;
+  }
+  .three a:hover {
+    background-color: #36c3c1;
+    font-weight: bolder;
+  }
+  .four a:hover {
+    background-color: #fd7dc8;
+    font-weight: bolder;
+  }

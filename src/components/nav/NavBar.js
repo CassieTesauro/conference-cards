@@ -5,16 +5,16 @@ import "./NavBar.css"
 export const NavBar = () => {
     return (
         <ul className="navbar">
-            <li className="navbar__item active">
+            <li className="navbar__item active one">
                 <Link className="navbar__link" to="/">Home</Link>
             </li>
-            <li className="navbar__item active">
+            <li className="navbar__item active two">
                 <Link className="navbar__link" to="/students">Roster</Link>
             </li>
-            <li className="navbar__item active">
+            <li className="navbar__item active three">
                 <Link className="navbar__link" to="/students/create">New Student</Link>
             </li>
-            <li className="navbar__item active">
+            <li className="navbar__item active four">
                 <Link className="navbar__link" to="#"
                     onClick={
                         () => {

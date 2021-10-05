@@ -1,0 +1,125 @@
+
+h2 {
+    font-size: 4.5rem;
+    margin-top: 5rem;
+    margin-bottom: 2rem;
+}
+
+
+.studentForm {
+    display: inline-block;
+    border: solid #fdca00 8px; 
+    background-color: #fdca00;
+    margin: 0 27%;
+    text-align: left;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+    
+.newStudentForm {
+    display: inline-block;
+    border: solid #36c3c1 8px; 
+    background-color: #fdca00;
+    margin: 0 27%;
+    text-align: left;
+    font-weight: bold;
+    font-size: 1.1rem;
+    
+}
+
+
+.studentForm > fieldset {
+padding-left: 2rem;
+}
+
+.guardian-grouping > fieldset  {
+padding-left: 2rem;
+}
+
+.medium > input {
+    width: 15em;
+}
+.small > input {
+    width: 2.4em;
+}
+.large > textarea {
+    width: 39em;
+    height: 10em;
+}
+
+.guardian-grouping {
+    display: flex;
+    padding-right: 0;
+    padding-left: .2rem;
+}
+
+.checkbox-size {
+    width: 2em;
+    height: 2em;
+}
+
+.check {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+}
+
+.save-changes {
+    font-weight: bold;
+    font-size: 1.5rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 5px;
+    padding: .7rem;
+    float: left;
+    background: rgb(77, 199, 104);
+
+    
+
+
+}
+.delete-student {
+    font-weight: bold;
+    border-radius: 5px;
+    padding: .7rem;
+    float: right;
+    margin-top: 2.5rem;
+    margin-right: 1rem;
+    background: rgb(223, 77, 77);
+
+}
+
+.form-control {
+    display: block;
+    width: 94%;
+    height: calc(1.5em + .75rem + 2px);
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    -webkit-transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+
+.studentForm {
+    background-position-x: right;
+    z-index: 1;
+    min-height: 25rem;
+    min-width: 45rem;
+    background-color: hsla(0,0%,100%,0.40);
+    background-blend-mode: overlay;
+    background-repeat: no-repeat;
+}
+
+.dialog {
+    min-width: 15rem;
+    min-height: 5rem;
+}
+
