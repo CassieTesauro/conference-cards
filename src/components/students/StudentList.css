@@ -1,0 +1,54 @@
+
+.roster__heading {
+    color: rgb(44, 43, 43);
+    font-family: 'Indie Flower';
+    display: block;
+    text-align: center;
+    font-size: 95px;
+    font-weight: bolder;
+    margin-top: 5%
+}
+.roster__subheading {
+    color: black;
+    font-family: 'Roboto Condensed', sans-serif;
+    display: block;
+    text-align: center;
+    font-size: 29px;
+    font-weight: bolder;
+    margin: 3vh 0 4vh 0;
+    padding-top: 3vh;
+}
+.roster__box {
+    border: #fdca00 solid 8px;
+    background-color: rgba(255, 255, 255, 0.932);
+    margin-left: 30%;
+    margin-right: 30%;
+    margin-top: 2%;
+    border-radius: 7px;
+}
+
+.roster__inner__box {
+    display: flex;
+    flex-direction: column;
+    margin-left:35%
+}
+
+a:link {
+    color: black;
+    font-family: sans-serif;
+    text-decoration: none;
+    font-size: 20px;
+}
+
+a:visited {
+    color: black;
+    font-family: sans-serif; 
+    text-decoration: none;
+}
+
+a:hover {
+   background-color: #fdca00;
+    font-weight: 900;
+    
+    
+}

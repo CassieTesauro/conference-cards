@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { useHistory } from "react-router-dom"
+import "./StudentForm.css"
+
 
 
 export const EditStudentForm = () => {
@@ -164,16 +166,12 @@ export const EditStudentForm = () => {
     /*~~~~~~~FORM STARTS HERE ~~~~~~~~~~*/
 
     return (
-        <>
-
-            <h3>Edit or delete your Conference Card</h3>
+        <>  
+            <h2 className="form-group">Student Conference Card</h2>
 
             <form className="studentForm" onSubmit={(event) => { event.preventDefault() }}>
-
-                <h2 className="form-group">Student Conference Card</h2>
-
                 <fieldset>
-                    <div className="form-group">
+                <div className="form-group medium">
                         <label htmlFor="student-name">Name:</label>
                         <input
                             onChange={
@@ -191,8 +189,9 @@ export const EditStudentForm = () => {
 
 
                 {/*~~~~~~~FORM PARENT ONE INFO ~~~~~~~~~~*/}
+                <div className="guardian-grouping">
                 <fieldset>
-                    <div className="form-group">
+                <div className="form-group medium">
                         <label htmlFor="guardian-one-name">Guardian 1 Name:</label>
                         <input
                             onChange={
@@ -209,23 +208,23 @@ export const EditStudentForm = () => {
 
 
                 <fieldset>
-                    <div className="form-group">
-                        <label htmlFor="primary-contact">Primary Contact</label>
+                <div className="form-group check">
+                        <label htmlFor="primary-contact">Primary</label>
                         <input
                             onChange={
                                 (evt) => { 
                                     modifyParentOne("primaryContact", evt.target.checked)
                                 }
                             }
-                            type="checkbox"
+                            type="checkbox" className="checkbox-size"
                             checked={parentOne?.primaryContact}
                         />
                     </div>
                 </fieldset>
-
+                </div>
 
                 <fieldset>
-                    <div className="form-group">
+                <div className="form-group medium">
                         <label htmlFor="guardian-one-phone">Guardian 1 Phone:</label>
                         <input
                             onChange={
@@ -239,11 +238,14 @@ export const EditStudentForm = () => {
                             value={parentOne?.parentPhone} />
                     </div>
                 </fieldset>
+                
+
 
 
                 {/*~~~~~~~FORM PARENT TWO INFO ~~~~~~~~~~*/}
+                <div className="guardian-grouping">
                 <fieldset>
-                    <div className="form-group">
+                <div className="form-group medium">
                         <label htmlFor="guardian-two-name">Guardian 2 Name:</label>
                         <input
                             onChange={
@@ -260,22 +262,23 @@ export const EditStudentForm = () => {
 
 
                 <fieldset>
-                    <div className="form-group">
-                        <label htmlFor="primary-contact">Primary Contact</label>
+                <div className="form-group check">
+                        <label htmlFor="primary-contact">Primary</label>
                         <input
                             onChange={
                                 (evt) => {
                                     modifyParentTwo("primaryContact", evt.target.checked)
                                 }
                             }
-                            type="checkbox"
+                            type="checkbox" className="checkbox-size"
                             checked={parentTwo?.primaryContact} />
                     </div>
                 </fieldset>
+                </div>
 
 
                 <fieldset>
-                    <div className="form-group">
+                <div className="form-group medium">
                         <label htmlFor="guardian-two-phone">Guardian 2 Phone:</label>
                         <input
                             onChange={
@@ -292,7 +295,7 @@ export const EditStudentForm = () => {
 
                 {/*~~~~~~~STUDENT ACADEMIC INFO ~~~~~~~~~~*/}
                 <fieldset>
-                    <div className="form-group">
+                    <div className="form-group small">
                         <label htmlFor="map-math-rit">MAP Math RIT:</label>
                         <input
                             onChange={
@@ -309,7 +312,7 @@ export const EditStudentForm = () => {
 
 
                 <fieldset>
-                    <div className="form-group">
+                    <div className="form-group small">
                         <label htmlFor="map-reading-rit">MAP Reading RIT:</label>
                         <input
                             onChange={
@@ -326,7 +329,7 @@ export const EditStudentForm = () => {
 
 
                 <fieldset>
-                    <div className="form-group">
+                    <div className="form-group small">
                         <label htmlFor="tla">TLA Level:</label>
                         <input
                             onChange={
@@ -343,7 +346,7 @@ export const EditStudentForm = () => {
 
 
                 <fieldset>
-                    <div className="form-group">
+                    <div className="form-group small">
                         <label htmlFor="rocket-math">Rocket Math Level:</label>
                         <input
                             onChange={
@@ -359,10 +362,11 @@ export const EditStudentForm = () => {
                 </fieldset>
 
 
+            
                 <fieldset>
-                    <div className="form-group">
+                    <div className="form-group large">
                         <label htmlFor="writing">Writing:</label>
-                        <input
+                        <textarea  /*changed from input*/
                             onChange={
                                 (evt) => {
                                     modifyStudentCard("writing", evt.target.value)
@@ -377,9 +381,9 @@ export const EditStudentForm = () => {
 
 
                 <fieldset>
-                    <div className="form-group">
+                    <div className="form-group large">
                         <label htmlFor="soc-emo">Social-Emotional:</label>
-                        <input
+                        <textarea  /*changed from input*/
                             onChange={
                                 (evt) => {
                                     modifyStudentCard("socialEmotional", evt.target.value)
@@ -396,13 +400,13 @@ export const EditStudentForm = () => {
                 <fieldset>
 
                     {/*~~~~~~~FORM SAVE CHANGES BUTTON ~~~~~~~~~~*/}
-                    <button className="btn btn-primary" onClick={SaveEditedCard}>
-                        ✅ Save Changes
+                    <button className="btn btn-primary save-changes" onClick={SaveEditedCard}>
+                        Save Changes
                     </button>
 
 
                     {/*~~~~~~~FORM SAVE CHANGES BUTTON ~~~~~~~~~~*/}
-                    <button className="btn btn-primary"
+                    <button className="btn btn-primary delete-student"
                         onClick={
                             () => {
                                 DeleteParentTwo(parentTwo?.id)
@@ -410,7 +414,7 @@ export const EditStudentForm = () => {
                                     .then(() => { return DeleteStudent(studentId) })
                                     .then(() => { history.push("/students") })
                             }}>
-                        🗑 Delete Student
+                        Delete Student
                     </button>
                 </fieldset>
             </form>

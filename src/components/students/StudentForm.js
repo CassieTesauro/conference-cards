@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from "react"
 import { useHistory } from "react-router-dom"
+import "./StudentForm.css"
 
 
 export const StudentForm = () => {
@@ -142,12 +143,12 @@ export const StudentForm = () => {
 
     return (
         <>
-            <form className="studentForm">
+            <h2 className="form-group">Student Conference Card</h2>
 
-                <h2 className="form-group">Student Conference Card</h2>
+            <form className="studentForm newStudentForm">
 
                 <fieldset>
-                    <div className="form-group">
+                    <div className="form-group medium">
                         <label htmlFor="student-name">Name:</label>
                         <input
                             onChange={
@@ -165,8 +166,10 @@ export const StudentForm = () => {
 
 
                 {/*~~~~~~~FORM PARENT ONE INFO ~~~~~~~~~~*/}
+              
+                <div className="guardian-grouping">
                 <fieldset>
-                    <div className="form-group">
+                    <div className="form-group medium">
                         <label htmlFor="guardian-one-name">Guardian 1 Name:</label>
                         <input
                             onChange={
@@ -184,7 +187,7 @@ export const StudentForm = () => {
 
 
                 <fieldset>
-                    <div className="form-group">
+                    <div className="form-group check">
                         <label htmlFor="primary-contact">Primary Contact</label>
                         <input
                             onChange={
@@ -192,13 +195,13 @@ export const StudentForm = () => {
                                     modifyParentOne("primaryContact", evt.target.checked)
                                 }
                             }
-                            type="checkbox" />
+                            type="checkbox" className="checkbox-size"/>
                     </div>
                 </fieldset>
-
+                </div>
 
                 <fieldset>
-                    <div className="form-group">
+                    <div className="form-group medium">
                         <label htmlFor="guardian-one-phone">Guardian 1 Phone:</label>
                         <input
                             onChange={
@@ -216,8 +219,9 @@ export const StudentForm = () => {
 
 
                 {/*~~~~~~~FORM PARENT TWO INFO ~~~~~~~~~~*/}
+                <div className="guardian-grouping">
                 <fieldset>
-                    <div className="form-group">
+                    <div className="form-group medium">
                         <label htmlFor="guardian-two-name">Guardian 2 Name:</label>
                         <input
                             onChange={
@@ -235,7 +239,7 @@ export const StudentForm = () => {
 
 
                 <fieldset>
-                    <div className="form-group">
+                    <div className="form-group check">
                         <label htmlFor="primary-contact">Primary Contact</label>
                         <input
                             onChange={
@@ -243,13 +247,13 @@ export const StudentForm = () => {
                                     modifyParentTwo("primaryContact", evt.target.checked)
                                 }
                             }
-                            type="checkbox" />
+                            type="checkbox" className="checkbox-size"/>
                     </div>
                 </fieldset>
-
+                </div>           
 
                 <fieldset>
-                    <div className="form-group">
+                    <div className="form-group medium">
                         <label htmlFor="guardian-two-phone">Guardian 2 Phone:</label>
                         <input
                             onChange={
@@ -267,7 +271,7 @@ export const StudentForm = () => {
 
                 {/*~~~~~~~STUDENT ACADEMIC INFO ~~~~~~~~~~*/}
                 <fieldset>
-                    <div className="form-group">
+                    <div className="form-group small">
                         <label htmlFor="map-math-rit">MAP Math RIT:</label>
                         <input
                             onChange={
@@ -285,7 +289,7 @@ export const StudentForm = () => {
 
 
                 <fieldset>
-                    <div className="form-group">
+                    <div className="form-group small">
                         <label htmlFor="map-reading-rit">MAP Reading RIT:</label>
                         <input
                             onChange={
@@ -303,7 +307,7 @@ export const StudentForm = () => {
 
 
                 <fieldset>
-                    <div className="form-group">
+                    <div className="form-group small">
                         <label htmlFor="tla">TLA Level:</label>
                         <input
                             onChange={
@@ -321,7 +325,7 @@ export const StudentForm = () => {
 
 
                 <fieldset>
-                    <div className="form-group">
+                    <div className="form-group small">
                         <label htmlFor="rocket-math">Rocket Math Level:</label>
                         <input
                             onChange={
@@ -339,7 +343,7 @@ export const StudentForm = () => {
 
 
                 <fieldset>
-                    <div className="form-group">
+                    <div className="form-group large">
                         <label htmlFor="writing">Writing:</label>
                         <input
                             onChange={
@@ -357,7 +361,7 @@ export const StudentForm = () => {
 
 
                 <fieldset>
-                    <div className="form-group">
+                    <div className="form-group large">
                         <label htmlFor="soc-emo">Social-Emotional:</label>
                         <input
                             onChange={
@@ -377,11 +381,11 @@ export const StudentForm = () => {
                 <fieldset>
 
                     {/*~~~~~~~FORM BUTTONS ~~~~~~~~~~*/}
-                    <button className="btn btn-primary" onClick={SaveConferenceCard}>
+                    <button className="btn btn-save save-changes" onClick={SaveConferenceCard}>
                         Save
                     </button>
 
-                    <button className="btn btn-primary" onClick={CancelConferenceCard}>
+                    <button className="btn btn-cancel delete-student" onClick={CancelConferenceCard}>
                         Cancel
                     </button>
                 </fieldset>
