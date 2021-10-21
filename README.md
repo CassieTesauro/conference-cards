@@ -1,71 +1,66 @@
-# Getting Started with Create React App
+<p float="left">
+    <img src="./src/images/mainheadercc.png" alt="Homepage" width="800" height="200">
+</p>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Overview
+This CRUD application was inspired by the countless hours teachers spend gathering and organizing student data.  With Conference Cards, teachers can view and manage data for their students in one spot.  Conference Cards has an accessible, easy-to-navigate layout that is intuitive for teachers with limited computer skills and limited time. After logging in, teachers can select a student from their roster in order to vew, edit, or delete their data card.  Teachers can also create cards for new students.
 
-## Available Scripts
+# Features
+<ul>
+    <li>User authentication</li>
+    <li>New user registration</li>
+    <li>easy to navigate design</li>
+    <li>Ability to create, read, update, and delete student cards</li>
+</ul>
 
-In the project directory, you can run:
+# User Stories
+<ul>
+    <li>As a user, I should be able to log in and view my current roster.</li>
+    <li>As a user, I should be able to select a student from the roster and view their card.</li>
+    <li>As a user, I should be able to update a student's card as their data changes.</li>
+    <li>As a user, I should be able to create a card for a new student.</li>
+    <li>As a user, I should be able to delete a card for a student that is no longer enrolled.</li>
+</ul>
 
-### `npm start`
+# Images from Conference Cards
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Homepage
+<p>
+    <img src="./src/images/homepagecc.png" alt="Homepage" width="700" height="500">
+</p>
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### Roster Menu
+<p>
+    <img src="./src/images/rostercc.png" alt="Roster" width="700" height="500">
+</p>
 
-### `npm test`
+### View or Edit Current Student Card
+<p>
+    <img src="./src/images/currentstudentcc.png" alt="Current Student" width="700" height="900">
+</p>
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Create New Student Card
+<p>
+    <img src="./src/images/newstudentcc.png" alt="New Student" width="700" height="900">
+</p>
 
-### `npm run build`
+# Watch Conference Cards in Action
+https://www.loom.com/share/6d03dddb31a649959c1a3174d9770de1
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+# Wireframe
+<p float="left">
+    <img src="./src/images/Wireframecc.png" alt="Homepage" width="800" height="400">
+</p>
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+# ERD
+<p float="left">
+    <img src="./src/images/ERDcc.png" alt="Homepage" width="800" height="400">
+</p>
 
-### `npm run eject`
+# Technologies Used
+HTML5 / CSS / JavaScript / React / Reactstrap / Git
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-# conference-cards
